@@ -1,0 +1,13 @@
+{
+  "service": "checkout-api",
+  "severity": "high",
+  "suspected_cause": "application regression",
+  "confidence": 0.82,
+  "evidence": [
+    "503 increase after deployment",
+    "readiness endpoint returning 503",
+    "CPU and memory normal"
+  ],
+  "recommended_action": "rollback",
+  "requires_human_approval": true
+}

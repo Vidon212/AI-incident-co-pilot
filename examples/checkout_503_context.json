@@ -1,0 +1,13 @@
+{
+  "service": "checkout-api",
+  "namespace": "production",
+  "deployment": "checkout-api",
+  "http_503_rate": 14.0,
+  "pod_restarts": 0,
+  "cpu_percent": 31.0,
+  "memory_percent": 47.0,
+  "recent_events": ["Readiness probe failed: HTTP probe failed with statuscode: 503"],
+  "current_image_tag": "v2.19.0",
+  "previous_image_tag": "v2.18.4",
+  "deployment_minutes_before_alert": 7
+}
