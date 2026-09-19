@@ -1,0 +1,34 @@
+{
+  "incident": {"id": "INC-1427", "service": "checkout-api", "window": "last_15_minutes"},
+  "metrics": {"error_rate": 0.16, "cpu": 0.31, "memory": 0.47},
+  "kubernetes_events": [
+    {"reason": "ReadinessFailure", "status": 503, "message": "HTTP probe returned statuscode 503"}
+  ],
+  "changes": [
+    {
+      "source": "Terraform", "type": "node_pool_labels", "resource": "gke/primary-pool",
+      "minutes_before_incident": 45, "affected_services": ["platform"], "metric_correlation": false
+    },
+    {
+      "source": "GitOps", "type": "container_image", "resource": "checkout-api:v2.20",
+      "minutes_before_incident": 5, "affected_services": ["checkout-api"], "metric_correlation": true
+    },
+    {
+      "source": "Crossplane", "type": "backup_policy", "resource": "cloudsql/checkout-db",
+      "minutes_before_incident": 2, "affected_services": ["cloudsql"], "metric_correlation": false
+    }
+  ],
+  "dependency_health": {
+    "payment-api": {"status": "healthy"},
+    "inventory-api": {"status": "healthy"},
+    "pricing-service": {"status": "degraded", "latency_ms": 4800, "baseline_latency_ms": 80},
+    "cloudsql/checkout-db": {"status": "saturated", "cpu": 0.96, "baseline_cpu": 0.35}
+  },
+  "traces": [
+    {"path": "checkout-api -> pricing-service", "finding": "latency increased from 80ms to 4800ms"}
+  ],
+  "infrastructure": [
+    {"resource": "cloudsql/checkout-db", "finding": "CPU increased from 35% to 96%"}
+  ],
+  "similar_incidents": []
+}
