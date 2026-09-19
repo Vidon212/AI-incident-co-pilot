@@ -1,0 +1,3 @@
+interface:
+  display_name: "Code Push"
+  short_description: "Safely commit and push code changes"

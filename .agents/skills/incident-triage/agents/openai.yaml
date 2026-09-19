@@ -1,0 +1,3 @@
+interface:
+  display_name: "Incident Triage"
+  short_description: "Safely diagnose Kubernetes incidents"
