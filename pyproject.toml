@@ -11,3 +11,8 @@ requires-python = ">=3.11"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.pylint."messages control"]
+disable = [
+    "duplicate-code", # The two CLI entry points intentionally share error handling.
+    "too-many-instance-attributes", # IncidentContext is a schema, not behavior-rich state.
+]

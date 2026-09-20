@@ -11,14 +11,22 @@ from .policy import evaluate
 
 
 def load_json(path: str) -> dict:
+    """Load a JSON object from a user-provided file path."""
     with Path(path).open(encoding="utf-8") as file:
         return json.load(file)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Apply deterministic policy to an AI incident diagnosis.")
+    """Evaluate an incident diagnosis and print the policy decision."""
+    parser = argparse.ArgumentParser(
+        description="Apply deterministic policy to an AI incident diagnosis."
+    )
     parser.add_argument("--context", required=True, help="Path to read-only incident context JSON.")
-    parser.add_argument("--diagnosis", required=True, help="Path to schema-constrained model diagnosis JSON.")
+    parser.add_argument(
+        "--diagnosis",
+        required=True,
+        help="Path to schema-constrained model diagnosis JSON.",
+    )
     args = parser.parse_args()
     try:
         context = IncidentContext.from_dict(load_json(args.context))

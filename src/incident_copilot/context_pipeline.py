@@ -13,7 +13,12 @@ from typing import Any
 from .models import ValidationError
 
 
-_WEIGHTS = {"temporal": 0.25, "dependency": 0.35, "blast_radius": 0.30, "metric": 0.10}
+_WEIGHTS = {
+    "temporal": 0.25,
+    "dependency": 0.35,
+    "blast_radius": 0.30,
+    "metric": 0.10,
+}
 
 
 def _number(value: Any, field: str) -> float:
@@ -42,6 +47,8 @@ def _objects(value: Any, field: str) -> list[dict[str, Any]]:
 
 @dataclass(frozen=True)
 class RankedChange:
+    """Recent change enriched with deterministic relevance features."""
+
     source: str
     type: str
     resource: str
@@ -51,6 +58,7 @@ class RankedChange:
     features: dict[str, float]
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a serializable representation of the ranked change."""
         return asdict(self)
 
 
@@ -64,7 +72,9 @@ def _rank_change(change: dict[str, Any], service: str) -> RankedChange:
     if not isinstance(minutes, int) or isinstance(minutes, bool) or minutes < 0:
         raise ValidationError("minutes_before_incident must be a non-negative integer")
     affected = _required(change, "affected_services")
-    if not isinstance(affected, list) or not all(isinstance(item, str) for item in affected):
+    if not isinstance(affected, list) or not all(
+        isinstance(item, str) for item in affected
+    ):
         raise ValidationError("affected_services must be a list of strings")
     dependency = 1.0 if service in affected else 0.2
     blast_radius = 1.0 if affected == [service] else (0.5 if service in affected else 0.2)
@@ -136,7 +146,11 @@ def build_incident_context(raw: dict[str, Any]) -> dict[str, Any]:
     infrastructure = _objects(infrastructure, "infrastructure")
     similar_incidents = _objects(similar_incidents, "similar_incidents")
 
-    ranked_changes = sorted((_rank_change(change, service) for change in changes), key=lambda item: item.score, reverse=True)
+    ranked_changes = sorted(
+        (_rank_change(change, service) for change in changes),
+        key=lambda item: item.score,
+        reverse=True,
+    )
     return {
         "incident_id": incident_id,
         "service": service,

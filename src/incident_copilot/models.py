@@ -16,6 +16,8 @@ Action = Literal["investigate", "rollback", "no_change"]
 
 @dataclass(frozen=True)
 class IncidentContext:
+    """Validated incident fields used by the deterministic policy."""
+
     service: str
     namespace: str
     deployment: str
@@ -30,24 +32,31 @@ class IncidentContext:
 
     @classmethod
     def from_dict(cls, raw: dict[str, Any]) -> "IncidentContext":
+        """Construct a context after validating required source fields."""
         required = {
-            "service", "namespace", "deployment", "http_503_rate", "pod_restarts",
-            "cpu_percent", "memory_percent", "recent_events", "current_image_tag",
+            "service", "namespace", "deployment", "http_503_rate",
+            "pod_restarts", "cpu_percent", "memory_percent", "recent_events",
+            "current_image_tag",
             "previous_image_tag", "deployment_minutes_before_alert",
         }
         missing = required - raw.keys()
         if missing:
             raise ValidationError(f"context missing fields: {', '.join(sorted(missing))}")
-        if not isinstance(raw["recent_events"], list) or not all(isinstance(x, str) for x in raw["recent_events"]):
+        if not isinstance(raw["recent_events"], list) or not all(
+            isinstance(item, str) for item in raw["recent_events"]
+        ):
             raise ValidationError("recent_events must be a list of strings")
         return cls(**{key: raw[key] for key in required})
 
     def to_dict(self) -> dict[str, Any]:
+        """Return a serializable representation of this context."""
         return asdict(self)
 
 
 @dataclass(frozen=True)
 class Diagnosis:
+    """Validated, untrusted diagnosis proposed by a reasoning layer."""
+
     service: str
     severity: Severity
     suspected_cause: str
@@ -58,6 +67,7 @@ class Diagnosis:
 
     @classmethod
     def from_dict(cls, raw: dict[str, Any]) -> "Diagnosis":
+        """Construct a diagnosis after validating the allowed contract."""
         required = {
             "service", "severity", "suspected_cause", "confidence", "evidence",
             "recommended_action", "requires_human_approval",
@@ -70,11 +80,16 @@ class Diagnosis:
         if raw["recommended_action"] not in {"investigate", "rollback", "no_change"}:
             raise ValidationError("recommended_action is not permitted")
         confidence = raw["confidence"]
-        if not isinstance(confidence, (int, float)) or isinstance(confidence, bool) or not 0 <= confidence <= 1:
+        if (
+            not isinstance(confidence, (int, float))
+            or isinstance(confidence, bool)
+            or not 0 <= confidence <= 1
+        ):
             raise ValidationError("confidence must be a number between 0 and 1")
-        if not isinstance(raw["evidence"], list) or not all(isinstance(x, str) for x in raw["evidence"]):
+        if not isinstance(raw["evidence"], list) or not all(
+            isinstance(item, str) for item in raw["evidence"]
+        ):
             raise ValidationError("evidence must be a list of strings")
         if not isinstance(raw["requires_human_approval"], bool):
             raise ValidationError("requires_human_approval must be a boolean")
         return cls(**{key: raw[key] for key in required})
-
