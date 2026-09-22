@@ -13,20 +13,30 @@ Decision = Literal["investigate", "requires_human_approval", "no_change"]
 
 @dataclass(frozen=True)
 class PolicyResult:
+    """Policy decision and any human-reviewable GitOps proposal."""
+
     decision: Decision
     reason: str
     proposed_git_change: dict[str, str] | None = None
 
     def to_dict(self) -> dict[str, object]:
+        """Return a serializable representation of the policy result."""
         return asdict(self)
 
 
-def evaluate(context: IncidentContext, diagnosis: Diagnosis, confidence_threshold: float = 0.80) -> PolicyResult:
+def evaluate(
+    context: IncidentContext,
+    diagnosis: Diagnosis,
+    confidence_threshold: float = 0.80,
+) -> PolicyResult:
     """Apply a deliberately narrow, auditable policy to untrusted diagnosis data."""
     if diagnosis.service != context.service:
         return PolicyResult("no_change", "Diagnosis service does not match incident context.")
     if diagnosis.confidence < confidence_threshold:
-        return PolicyResult("investigate", f"Confidence {diagnosis.confidence:.2f} is below {confidence_threshold:.2f}.")
+        return PolicyResult(
+            "investigate",
+            f"Confidence {diagnosis.confidence:.2f} is below {confidence_threshold:.2f}.",
+        )
     if diagnosis.recommended_action == "rollback":
         return PolicyResult(
             "requires_human_approval",

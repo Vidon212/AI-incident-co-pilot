@@ -11,7 +11,10 @@ from .models import ValidationError
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Normalize and rank incident evidence for LLM reasoning.")
+    """Normalize collector output and print incident context as JSON."""
+    parser = argparse.ArgumentParser(
+        description="Normalize and rank incident evidence for LLM reasoning."
+    )
     parser.add_argument("--input", required=True, help="Path to trusted collector output as JSON.")
     args = parser.parse_args()
     try:
