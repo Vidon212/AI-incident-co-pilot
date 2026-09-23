@@ -1,0 +1,17 @@
+{
+  "action": "CONFIG_CHANGE",
+  "resource": "payments-api",
+  "namespace": "production",
+  "environment": "production",
+  "desired_state": {
+    "hpa.maxReplicas": 20
+  },
+  "confidence": 0.89,
+  "evidence": [
+    "Traffic 2.4x normal; CPU 94%; latency 3.7s; errors 8%.",
+    "HPA at maxReplicas 10; SQL CPU 41%, connections 32%."
+  ],
+  "rollback_plan": {
+    "hpa.maxReplicas": 10
+  }
+}
