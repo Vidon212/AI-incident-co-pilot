@@ -1,0 +1,28 @@
+{
+  "resource": "payments-api",
+  "namespace": "production",
+  "environment": "production",
+  "current_state": {
+    "replicas": 10,
+    "hpa.maxReplicas": 10
+  },
+  "observed_replicas": 10,
+  "db_utilization": 0.41,
+  "hpa_max_replicas": 10,
+  "approved_bounds": {
+    "replicas": 20,
+    "hpa.maxReplicas": 20
+  },
+  "checks": {
+    "rollback_possible": true,
+    "capacity_available": true,
+    "quota_available": true,
+    "cost_reviewed": true,
+    "dependency_capacity_reviewed": true
+  },
+  "blast_radius": 1,
+  "max_blast_radius": 1,
+  "git_path": "apps/production/payments-api/values.yaml",
+  "controller": "argocd",
+  "known_good_version": null
+}
