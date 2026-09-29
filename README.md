@@ -12,21 +12,16 @@ The project intentionally has **no Kubernetes credentials, no `kubectl` integrat
 
 ```mermaid
 flowchart LR
-    Collectors[Trusted read-only collectors] --> Context[Context pipeline]
-    Context --> Evidence[Curated incident evidence]
-    Evidence --> LLM[LLM reasoning]
-    LLM --> Diagnosis[Schema-validated diagnosis]
-    Diagnosis --> Policy[Deterministic policy]
-    Policy -->|Investigate| Investigation[Investigation outcome]
-    Policy -->|No change| NoChange[No change]
-    Policy -->|Requires approval| Review[Human review]
-    Review -->|Approved| GitOps[GitOps change proposal]
-
-    classDef boundary fill:#fff3cd,stroke:#856404,color:#3d2f00;
-    class LLM,Diagnosis boundary;
+    Signals[Read-only signals<br/>metrics · events · traces · changes] --> Context[Normalized incident context]
+    Context --> Diagnosis[Structured LLM diagnosis]
+    Diagnosis --> Policy[Schema validation + deterministic policy]
+    Policy -->|Investigate / no change| Stop[No production change]
+    Policy -->|Rollback candidate| Proposal[Reviewable GitOps proposal]
+    Proposal -.-> Gate{Human approval gate<br/>external}
+    Gate -.-> GitOps[GitOps PR + controller<br/>external integration]
 ```
 
-The LLM can reason about evidence, but it cannot enact changes. Policy validation and human approval form the authority boundary before any GitOps proposal is created.
+The LLM can reason about evidence, but it cannot enact changes. This project produces a proposal for review; approval, PR creation, and controller execution require external integration.
 
 ## Requirements
 
