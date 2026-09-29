@@ -93,7 +93,7 @@ flowchart TD
     Diff --> Review[Human review artifact]
     Review -. external integration .-> Approval[Human approval and Git PR]
     Approval --> Controller[Argo CD / Terraform / Crossplane]
-    Controller --> Verification[Post-change SLO verification: future session]
+    Controller -. trusted observations .-> Verification[Local SLO verification]
 ```
 
 Run the payments scaling challenge:
@@ -126,10 +126,11 @@ an unrelated NetworkPolicy deletion denied. Omit `--plan` to get `requires_plan`
 this preliminary change description is not ready for approval or execution.
 
 The intent requires `action`, `resource`, `namespace`, `environment`, one-field
-`desired_state`, `confidence`, nonempty `evidence`, and a `rollback_plan` restoring
-the trusted old value. Unknown fields, extra desired-state changes, invalid numbers,
-and unsupported actions are rejected. Deletion and database mutations are outside
-this allowlist. Read-only data collection remains outside the mutation API.
+`desired_state`, `confidence`, nonempty `evidence`, a `rollback_plan` restoring
+the trusted old value, and a predeclared `verification` contract. Unknown fields,
+extra desired-state changes, invalid numbers, and unsupported actions are rejected.
+Deletion and database mutations are outside this allowlist. Read-only data
+collection remains outside the mutation API.
 
 | Intent field | Deterministic controls | Review |
 | --- | --- | --- |
@@ -169,10 +170,60 @@ Approval is not accepted as model input, and a successful policy result is not a
 execution credential. An external approval service must bind approval to the exact
 reviewed intent, context, plan, and repository revision, re-evaluate after changes,
 and submit through the owning controller. RBAC, authenticated approvals, PR
-creation, raw-plan adapters, and post-change verification are integration work,
-not implemented runtime capabilities. Next session's verifier should compare the
-original SLO symptoms before and after the change and watch for new regressions.
+creation, and raw-plan adapters are integration work, not implemented runtime
+capabilities. The local verifier below consumes normalized observations but does
+not query production itself.
 
 CLI exit codes: `0` for a review artifact (`requires_plan` or
 `requires_human_approval`), `1` for `deny`/`investigate`, and `2` for malformed input.
 No exit code grants permission to apply.
+
+## Session 4: verify remediation against SLOs
+
+Each remediation intent now declares a verification contract before review:
+numeric success and failure thresholds, a complete observation window, critical
+alert handling, traffic and dependency controls, and optional historical-baseline
+guardrails. Thresholds use explicit metric units such as `p95_latency_ms` and
+`http_error_rate` (a fraction, so 1% is `0.01`). At least one success threshold
+must measure a user-facing SLI. The review artifact includes a SHA-256 fingerprint
+of the contract. An external approval service must bind that fingerprint to the
+approved intent and executed change; the local CLI cannot authenticate it.
+
+Run the synthetic checkout rollback after a full ten-minute observation window:
+
+```bash
+PYTHONPATH=src python3 -m incident_copilot.verification_cli \
+  --intent examples/verification/checkout_rollback_intent.json \
+  --observations examples/verification/checkout_rollback_observations.json
+```
+
+It returns `SUCCESS`: checkout completion rises from 83% to 99.4%, HTTP errors
+fall from 17% to 0.6%, and p95 latency falls from 3,800ms to 420ms. Controller
+health is recorded, but cannot make failed SLIs pass.
+
+For the payments scaling exercise, run the same CLI with
+`examples/remediation/payments_scale_intent.json` and
+`examples/verification/payments_scale_observations.json`. It requires p95 and
+p99 latency, HTTP errors, throughput, pod CPU, DB connections, and DB latency in
+both windows. The example is a hypothetical *post-approval* observation; the
+Session 3 policy still blocks that scale intent while HPA maxReplicas is 10.
+If traffic falls beyond the contracted tolerance or dependency latency improves
+enough to explain the recovery, the result is `INCONCLUSIVE`, not a claim that
+scaling caused it.
+
+Run `examples/verification/checkout_memory_intent.json` with
+`examples/verification/checkout_memory_observations.json` to see
+`outcome: SUCCESS` and `underlying_problem: unresolved`. OOMKills disappear
+and customer-facing signals improve, while 940Mi of memory remains above 2×
+the 350Mi historical baseline. This is mitigation evidence, not root-cause proof.
+
+The verifier returns `FAILED` for a triggered failure threshold, a new critical
+alert, unhealthy controller, or unmet success threshold. It returns
+`INCONCLUSIVE` for missing signals, a mismatched contract/change, preexisting
+SLO health, or a confounded comparison. It never initiates a rollback. CLI exit
+codes are `0` for `SUCCESS`, `1` for `FAILED`/`INCONCLUSIVE`, and `2` for
+malformed input. These example snapshots are synthetic; production integration
+must query read-only observability sources, enforce freshness and provenance,
+and bind the approved contract to the exact deployment. Error budget and
+historical remediation data could inform a future deterministic approval tier;
+the current policy continues to require human approval for every change.

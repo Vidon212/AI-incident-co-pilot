@@ -1,0 +1,25 @@
+{
+  "action": "CONFIG_CHANGE",
+  "resource": "checkout-api",
+  "namespace": "production",
+  "environment": "production",
+  "desired_state": {"memory.limitMi": 1024},
+  "confidence": 0.92,
+  "evidence": ["OOMKills and HTTP errors rose during normal traffic."],
+  "rollback_plan": {"memory.limitMi": 512},
+  "verification": {
+    "observation_window_minutes": 10,
+    "success_criteria": {
+      "http_error_rate": {"op": "lt", "value": 0.02},
+      "p95_latency_ms": {"op": "lt", "value": 700},
+      "oomkills": {"op": "eq", "value": 0}
+    },
+    "failure_criteria": {
+      "http_error_rate": {"op": "gt", "value": 0.05}
+    },
+    "new_critical_alert_fails": true,
+    "max_traffic_drop_fraction": 0.2,
+    "max_dependency_improvement_fraction": 0.2,
+    "baseline_guardrails": {"memory_working_set_mi": 2}
+  }
+}

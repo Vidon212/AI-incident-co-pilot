@@ -13,5 +13,23 @@
   ],
   "rollback_plan": {
     "replicas": 10
+  },
+  "verification": {
+    "observation_window_minutes": 10,
+    "success_criteria": {
+      "p95_latency_ms": {"op": "lt", "value": 700},
+      "p99_latency_ms": {"op": "lt", "value": 1500},
+      "http_error_rate": {"op": "lt", "value": 0.01}
+    },
+    "failure_criteria": {
+      "http_error_rate": {"op": "gt", "value": 0.05},
+      "db_p95_latency_ms": {"op": "gt", "value": 300},
+      "db_connections": {"op": "gt", "value": 180},
+      "pod_cpu_percent": {"op": "gt", "value": 90}
+    },
+    "new_critical_alert_fails": true,
+    "max_traffic_drop_fraction": 0.2,
+    "max_dependency_improvement_fraction": 0.2,
+    "baseline_guardrails": {}
   }
 }

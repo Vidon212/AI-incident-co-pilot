@@ -1,0 +1,42 @@
+{
+  "execution": {
+    "resource": "payments-api",
+    "namespace": "production",
+    "environment": "production",
+    "action": "SCALE",
+    "field": "replicas",
+    "before": 10,
+    "after": 16,
+    "completed_at": "2026-09-28T13:10:00Z",
+    "controller_healthy": true,
+    "approved_contract_sha256": "8abceb032f5afae9225094d0c8ab02eb1309a276723fa71ba57be2496c1dbf1f"
+  },
+  "before": {
+    "start": "2026-09-28T13:00:00Z",
+    "end": "2026-09-28T13:10:00Z",
+    "metrics": {
+      "p95_latency_ms": 4800,
+      "p99_latency_ms": 7000,
+      "http_error_rate": 0.08,
+      "throughput_rps": 240,
+      "pod_cpu_percent": 94,
+      "db_connections": 100,
+      "db_p95_latency_ms": 200
+    }
+  },
+  "after": {
+    "start": "2026-09-28T13:10:00Z",
+    "end": "2026-09-28T13:20:00Z",
+    "metrics": {
+      "p95_latency_ms": 600,
+      "p99_latency_ms": 1000,
+      "http_error_rate": 0.005,
+      "throughput_rps": 245,
+      "pod_cpu_percent": 50,
+      "db_connections": 130,
+      "db_p95_latency_ms": 190
+    }
+  },
+  "historical_baseline": {},
+  "new_critical_alert": false
+}

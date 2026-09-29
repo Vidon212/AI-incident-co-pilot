@@ -1,0 +1,38 @@
+{
+  "execution": {
+    "resource": "checkout-api",
+    "namespace": "production",
+    "environment": "production",
+    "action": "ROLLBACK",
+    "field": "image.tag",
+    "before": "v2.20",
+    "after": "v2.19",
+    "completed_at": "2026-09-28T12:10:00Z",
+    "controller_healthy": true,
+    "approved_contract_sha256": "48cae4be2cb16db1692bfef69171c12add29b9a89bee5a80b113418c77abcb81"
+  },
+  "before": {
+    "start": "2026-09-28T12:00:00Z",
+    "end": "2026-09-28T12:10:00Z",
+    "metrics": {
+      "checkout_completion_rate": 0.83,
+      "http_error_rate": 0.17,
+      "p95_latency_ms": 3800,
+      "throughput_rps": 200,
+      "db_p95_latency_ms": 140
+    }
+  },
+  "after": {
+    "start": "2026-09-28T12:10:00Z",
+    "end": "2026-09-28T12:20:00Z",
+    "metrics": {
+      "checkout_completion_rate": 0.994,
+      "http_error_rate": 0.006,
+      "p95_latency_ms": 420,
+      "throughput_rps": 203,
+      "db_p95_latency_ms": 138
+    }
+  },
+  "historical_baseline": {},
+  "new_critical_alert": false
+}

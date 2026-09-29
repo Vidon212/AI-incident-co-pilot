@@ -1,0 +1,40 @@
+{
+  "execution": {
+    "resource": "checkout-api",
+    "namespace": "production",
+    "environment": "production",
+    "action": "CONFIG_CHANGE",
+    "field": "memory.limitMi",
+    "before": 512,
+    "after": 1024,
+    "completed_at": "2026-09-28T14:10:00Z",
+    "controller_healthy": true,
+    "approved_contract_sha256": "b5ef98f18bfe9727a471070b43c543944103c89f5bb21fa51d504afa133500c4"
+  },
+  "before": {
+    "start": "2026-09-28T14:00:00Z",
+    "end": "2026-09-28T14:10:00Z",
+    "metrics": {
+      "http_error_rate": 0.08,
+      "p95_latency_ms": 1900,
+      "oomkills": 14,
+      "memory_working_set_mi": 500,
+      "throughput_rps": 100,
+      "db_p95_latency_ms": 120
+    }
+  },
+  "after": {
+    "start": "2026-09-28T14:10:00Z",
+    "end": "2026-09-28T14:20:00Z",
+    "metrics": {
+      "http_error_rate": 0.012,
+      "p95_latency_ms": 640,
+      "oomkills": 0,
+      "memory_working_set_mi": 940,
+      "throughput_rps": 100,
+      "db_p95_latency_ms": 118
+    }
+  },
+  "historical_baseline": {"memory_working_set_mi": 350},
+  "new_critical_alert": false
+}
