@@ -8,6 +8,18 @@ read-only incident context -> structured LLM diagnosis -> deterministic policy -
 
 The project intentionally has **no Kubernetes credentials, no `kubectl` integration, and no production mutation capability**. A rollback is represented only as a proposed GitOps change and always requires human approval.
 
+## Development stages
+
+The co-pilot is built in stages. Each stage adds one capability while keeping
+model reasoning separate from policy and production authority.
+
+| Stage | Capability | Current state |
+| --- | --- | --- |
+| 1 | Structured incident triage and deterministic rollback policy | Available |
+| 2 | Read-only context normalization and evidence ranking | Available |
+| 3 | Safe remediation intents, plan comparison, and review artifacts | Available |
+| 4 | Post-change SLO verification | Available |
+
 ## Architecture
 
 ```mermaid
@@ -27,7 +39,7 @@ The LLM can reason about evidence, but it cannot enact changes. This project pro
 
 Python 3.11 or newer.
 
-## Run a policy evaluation
+## Stage 1: triage and policy evaluation
 
 ```bash
 PYTHONPATH=src python3 -m incident_copilot \
@@ -37,7 +49,7 @@ PYTHONPATH=src python3 -m incident_copilot \
 
 The expected decision is `requires_human_approval`, with a proposed Git change to return `checkout-api` to `v2.18.4`.
 
-## Build incident context
+## Stage 2: incident context and evidence
 
 The context pipeline converts trusted collector output into compact, provider-neutral evidence for LLM reasoning. It normalizes metrics, Kubernetes events, dependency health, traces, infrastructure evidence, and recent changes.
 
@@ -61,27 +73,13 @@ flowchart TD
     Context --> Reasoning[LLM-ready evidence]
 ```
 
-## Safety model
+## Stage 3: safe remediation proposals
 
-- Collector input is read-only and normalized before it reaches a reasoning layer.
-- Diagnoses are schema-validated before policy evaluation.
-- Confidence below `0.80` is routed to investigation.
-- Rollbacks require human approval and result in a GitOps change proposal, never a direct production action.
-- Actions outside the permitted policy default to no change.
-
-## Test suite
-
-```bash
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-```
-
-## Session 3: safe remediation proposals
-
-The new controller boundary accepts `SCALE`, `ROLLBACK`, and a deliberately narrow
+The remediation boundary accepts `SCALE`, `ROLLBACK`, and a deliberately narrow
 `CONFIG_CHANGE` contract. It produces local review artifacts only. It never creates
 PRs, obtains credentials, calls Kubernetes, or applies infrastructure changes.
-The earlier diagnosis CLI remains available for Session 1/2 examples; use the
-Session 3 CLI for the additional safety checks below.
+The Stage 1 diagnosis CLI remains available; use the remediation CLI for the
+additional safety checks below.
 
 ```mermaid
 flowchart TD
@@ -178,7 +176,7 @@ CLI exit codes: `0` for a review artifact (`requires_plan` or
 `requires_human_approval`), `1` for `deny`/`investigate`, and `2` for malformed input.
 No exit code grants permission to apply.
 
-## Session 4: verify remediation against SLOs
+## Stage 4: verify remediation against SLOs
 
 Each remediation intent now declares a verification contract before review:
 numeric success and failure thresholds, a complete observation window, critical
@@ -206,7 +204,7 @@ For the payments scaling exercise, run the same CLI with
 `examples/verification/payments_scale_observations.json`. It requires p95 and
 p99 latency, HTTP errors, throughput, pod CPU, DB connections, and DB latency in
 both windows. The example is a hypothetical *post-approval* observation; the
-Session 3 policy still blocks that scale intent while HPA maxReplicas is 10.
+Stage 3 policy still blocks that scale intent while HPA maxReplicas is 10.
 If traffic falls beyond the contracted tolerance or dependency latency improves
 enough to explain the recovery, the result is `INCONCLUSIVE`, not a claim that
 scaling caused it.
@@ -227,3 +225,17 @@ must query read-only observability sources, enforce freshness and provenance,
 and bind the approved contract to the exact deployment. Error budget and
 historical remediation data could inform a future deterministic approval tier;
 the current policy continues to require human approval for every change.
+
+## Safety model
+
+- Collector input is read-only and normalized before it reaches a reasoning layer.
+- Diagnoses are schema-validated before policy evaluation.
+- Confidence below `0.80` is routed to investigation.
+- Rollbacks require human approval and result in a GitOps change proposal, never a direct production action.
+- Actions outside the permitted policy default to no change.
+
+## Test suite
+
+```bash
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+```
