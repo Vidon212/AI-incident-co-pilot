@@ -8,6 +8,18 @@ read-only incident context -> structured LLM diagnosis -> deterministic policy -
 
 The project intentionally has **no Kubernetes credentials, no `kubectl` integration, and no production mutation capability**. A rollback is represented only as a proposed GitOps change and always requires human approval.
 
+## Development stages
+
+The co-pilot is built in stages. Each stage adds one capability while keeping
+model reasoning separate from policy and production authority.
+
+| Stage | Capability | Current state |
+| --- | --- | --- |
+| 1 | Structured incident triage and deterministic rollback policy | Available |
+| 2 | Read-only context normalization and evidence ranking | Available |
+| 3 | Safe remediation intents, plan comparison, and review artifacts | Available |
+| 4 | Post-change SLO verification | [In review](https://github.com/Vidon212/AI-incident-co-pilot/pull/8) |
+
 ## Architecture
 
 ```mermaid
@@ -27,7 +39,7 @@ The LLM can reason about evidence, but it cannot enact changes. This project pro
 
 Python 3.11 or newer.
 
-## Run a policy evaluation
+## Stage 1: triage and policy evaluation
 
 ```bash
 PYTHONPATH=src python3 -m incident_copilot \
@@ -37,7 +49,7 @@ PYTHONPATH=src python3 -m incident_copilot \
 
 The expected decision is `requires_human_approval`, with a proposed Git change to return `checkout-api` to `v2.18.4`.
 
-## Build incident context
+## Stage 2: incident context and evidence
 
 The context pipeline converts trusted collector output into compact, provider-neutral evidence for LLM reasoning. It normalizes metrics, Kubernetes events, dependency health, traces, infrastructure evidence, and recent changes.
 
@@ -61,27 +73,13 @@ flowchart TD
     Context --> Reasoning[LLM-ready evidence]
 ```
 
-## Safety model
+## Stage 3: safe remediation proposals
 
-- Collector input is read-only and normalized before it reaches a reasoning layer.
-- Diagnoses are schema-validated before policy evaluation.
-- Confidence below `0.80` is routed to investigation.
-- Rollbacks require human approval and result in a GitOps change proposal, never a direct production action.
-- Actions outside the permitted policy default to no change.
-
-## Test suite
-
-```bash
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-```
-
-## Session 3: safe remediation proposals
-
-The new controller boundary accepts `SCALE`, `ROLLBACK`, and a deliberately narrow
+The remediation boundary accepts `SCALE`, `ROLLBACK`, and a deliberately narrow
 `CONFIG_CHANGE` contract. It produces local review artifacts only. It never creates
 PRs, obtains credentials, calls Kubernetes, or applies infrastructure changes.
-The earlier diagnosis CLI remains available for Session 1/2 examples; use the
-Session 3 CLI for the additional safety checks below.
+The Stage 1 diagnosis CLI remains available; use the remediation CLI for the
+additional safety checks below.
 
 ```mermaid
 flowchart TD
@@ -93,7 +91,7 @@ flowchart TD
     Diff --> Review[Human review artifact]
     Review -. external integration .-> Approval[Human approval and Git PR]
     Approval --> Controller[Argo CD / Terraform / Crossplane]
-    Controller --> Verification[Post-change SLO verification: future session]
+    Controller -. trusted observations .-> Verification[Stage 4 SLO verification: in review]
 ```
 
 Run the payments scaling challenge:
@@ -170,9 +168,23 @@ execution credential. An external approval service must bind approval to the exa
 reviewed intent, context, plan, and repository revision, re-evaluate after changes,
 and submit through the owning controller. RBAC, authenticated approvals, PR
 creation, raw-plan adapters, and post-change verification are integration work,
-not implemented runtime capabilities. Next session's verifier should compare the
-original SLO symptoms before and after the change and watch for new regressions.
+not implemented runtime capabilities. The Stage 4 verifier under review compares
+the original SLO symptoms before and after the change and watches for regressions.
 
 CLI exit codes: `0` for a review artifact (`requires_plan` or
 `requires_human_approval`), `1` for `deny`/`investigate`, and `2` for malformed input.
 No exit code grants permission to apply.
+
+## Safety model
+
+- Collector input is read-only and normalized before it reaches a reasoning layer.
+- Diagnoses are schema-validated before policy evaluation.
+- Confidence below `0.80` is routed to investigation.
+- Rollbacks require human approval and result in a GitOps change proposal, never a direct production action.
+- Actions outside the permitted policy default to no change.
+
+## Test suite
+
+```bash
+PYTHONPATH=src python3 -m unittest discover -s tests -v
+```
