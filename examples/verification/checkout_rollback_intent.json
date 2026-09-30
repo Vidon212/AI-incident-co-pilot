@@ -1,0 +1,25 @@
+{
+  "action": "ROLLBACK",
+  "resource": "checkout-api",
+  "namespace": "production",
+  "environment": "production",
+  "desired_state": {"image.tag": "v2.19"},
+  "confidence": 0.94,
+  "evidence": ["17% HTTP errors and 3.8s p95 latency after v2.20 deployment."],
+  "rollback_plan": {"image.tag": "v2.20"},
+  "verification": {
+    "observation_window_minutes": 10,
+    "success_criteria": {
+      "checkout_completion_rate": {"op": "gte", "value": 0.99},
+      "http_error_rate": {"op": "lt", "value": 0.01},
+      "p95_latency_ms": {"op": "lt", "value": 700}
+    },
+    "failure_criteria": {
+      "http_error_rate": {"op": "gt", "value": 0.05}
+    },
+    "new_critical_alert_fails": true,
+    "max_traffic_drop_fraction": 0.2,
+    "max_dependency_improvement_fraction": 0.2,
+    "baseline_guardrails": {}
+  }
+}

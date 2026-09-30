@@ -5,6 +5,8 @@ trusted collectors and platform tooling, never from the model itself.
 """
 
 from dataclasses import asdict, dataclass, fields
+import hashlib
+import json
 import math
 import re
 
@@ -17,6 +19,16 @@ FIELDS = {
     "CONFIG_CHANGE": {"hpa.maxReplicas", "memory.limitMi", "node_pool.max_nodes"},
 }
 IDENTIFIER = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9_.-]*\Z")
+METRIC_BOUNDS = {
+    "checkout_completion_rate": (0, 1), "http_error_rate": (0, 1),
+    "p95_latency_ms": (0, None), "p99_latency_ms": (0, None),
+    "throughput_rps": (0, None), "pod_cpu_percent": (0, 100),
+    "db_connections": (0, None), "db_p95_latency_ms": (0, None),
+    "oomkills": (0, None), "memory_working_set_mi": (0, None),
+}
+USER_FACING_METRICS = {"checkout_completion_rate", "http_error_rate",
+                       "p95_latency_ms", "p99_latency_ms"}
+OPERATORS = {"lt", "lte", "gt", "gte", "eq"}
 
 
 def object_fields(value, required, name):
@@ -58,6 +70,50 @@ def state(value, name):
     return field
 
 
+def validate_verification_contract(contract):
+    """Require measurable, bounded criteria before a proposal can be reviewed."""
+    object_fields(contract, {"observation_window_minutes", "success_criteria",
+                             "failure_criteria", "new_critical_alert_fails",
+                             "max_traffic_drop_fraction",
+                             "max_dependency_improvement_fraction", "baseline_guardrails"},
+                  "verification")
+    positive_integer(contract["observation_window_minutes"], "observation_window_minutes")
+    if contract["observation_window_minutes"] > 60:
+        raise ValidationError("observation_window_minutes exceeds 60")
+    if contract["new_critical_alert_fails"] is not True:
+        raise ValidationError("new_critical_alert_fails must be true")
+    number(contract["max_traffic_drop_fraction"], "max_traffic_drop_fraction", 0, 0.99)
+    number(contract["max_dependency_improvement_fraction"],
+           "max_dependency_improvement_fraction", 0, 0.99)
+    for kind in ("success_criteria", "failure_criteria"):
+        criteria = contract[kind]
+        if not isinstance(criteria, dict) or not criteria:
+            raise ValidationError(f"{kind} must contain metric thresholds")
+        for metric, rule in criteria.items():
+            if metric not in METRIC_BOUNDS:
+                raise ValidationError(f"Unknown verification metric: {metric}")
+            object_fields(rule, {"op", "value"}, f"{kind}.{metric}")
+            if not isinstance(rule["op"], str) or rule["op"] not in OPERATORS:
+                raise ValidationError(f"Unsupported operator for {metric}")
+            lower, upper = METRIC_BOUNDS[metric]
+            number(rule["value"], f"{kind}.{metric}", lower, upper)
+    if not USER_FACING_METRICS.intersection(contract["success_criteria"]):
+        raise ValidationError("success_criteria requires a user-facing SLI")
+    guardrails = contract["baseline_guardrails"]
+    if not isinstance(guardrails, dict):
+        raise ValidationError("baseline_guardrails must be an object")
+    for metric, ratio in guardrails.items():
+        if metric != "memory_working_set_mi":
+            raise ValidationError(f"Unsupported baseline guardrail: {metric}")
+        number(ratio, f"baseline_guardrails.{metric}", 1)
+
+
+def verification_digest(contract):
+    """Fingerprint the reviewed contract for an external approval service to bind."""
+    return hashlib.sha256(json.dumps(contract, sort_keys=True,
+                                     separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
 @dataclass(frozen=True)
 class RemediationIntent:
     """A narrow proposal without approval or execution privileges."""
@@ -70,6 +126,7 @@ class RemediationIntent:
     confidence: float
     evidence: list[str]
     rollback_plan: dict
+    verification: dict
 
     @classmethod
     def from_dict(cls, raw):
@@ -89,6 +146,7 @@ class RemediationIntent:
             raise ValidationError("desired_state does not match action")
         if state(raw["rollback_plan"], "rollback_plan") != field:
             raise ValidationError("rollback_plan must restore the same field")
+        validate_verification_contract(raw["verification"])
         return cls(**raw)
 
 
@@ -101,6 +159,7 @@ class RemediationResult:
     reasons: list[str]
     proposed_change: dict | None = None
     approval: str | None = None
+    verification_contract_sha256: str | None = None
 
     def to_dict(self):
         """Return the CLI representation."""
@@ -263,7 +322,9 @@ def evaluate_remediation(raw_intent, context, plan=None):
     }
     if plan is None:
         return RemediationResult("requires_plan", risk,
-                                 ["Provide a complete trusted normalized Git/IaC plan."], change)
+                                 ["Provide a complete trusted normalized Git/IaC plan."], change,
+                                 verification_contract_sha256=verification_digest(
+                                     intent.verification))
     if not plan_matches(plan, change):
         return RemediationResult(
             "deny", risk, ["Plan does not exactly match intent; unexpected changes blocked."],
@@ -272,4 +333,5 @@ def evaluate_remediation(raw_intent, context, plan=None):
         "requires_human_approval", risk,
         ["Intent matches plan. Human approval is required before a Git PR or apply."],
         change, "senior" if risk == "high" else "operator",
+        verification_digest(intent.verification),
     )
