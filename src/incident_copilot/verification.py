@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 
 from .models import ValidationError
-from .remediation import (METRIC_BOUNDS, RemediationIntent, identifier, number,
+from .remediation import (METRIC_BOUNDS, USER_FACING_METRICS, RemediationIntent, identifier, number,
                           object_fields, verification_digest)
 
 
@@ -188,23 +188,25 @@ def evaluate_verification(raw_intent, observations):
     else:
         root_status, root_findings, gap = baseline_assessment(contract, observations)
         reasons.extend(root_findings)
+        missed = [metric for metric, rule in contract["success_criteria"].items()
+                  if not matches(signals["after"][metric], rule)]
         if gap:
-            outcome = "INCONCLUSIVE"
             reasons.append(gap)
-        elif failures := failure_findings(contract, observations):
+        if failures := failure_findings(contract, observations):
             outcome = "FAILED"
             reasons.extend(failures)
+        elif missed:
+            outcome = "FAILED"
+            reasons.append("Success thresholds not met: " + ", ".join(sorted(missed)))
+        elif gap:
+            outcome = "INCONCLUSIVE"
         elif controls := control_findings(contract, signals["before"], signals["after"]):
             outcome = "INCONCLUSIVE"
             reasons.extend(controls)
         else:
-            missed = [metric for metric, rule in contract["success_criteria"].items()
-                      if not matches(signals["after"][metric], rule)]
-            if missed:
-                outcome = "FAILED"
-                reasons.append("Success thresholds not met: " + ", ".join(sorted(missed)))
-            elif all(matches(signals["before"][metric], rule)
-                     for metric, rule in contract["success_criteria"].items()):
+            if all(matches(signals["before"][metric], rule)
+                   for metric, rule in contract["success_criteria"].items()
+                   if metric in USER_FACING_METRICS):
                 outcome = "INCONCLUSIVE"
                 reasons.append("User-facing success thresholds already passed before the change.")
             else:

@@ -174,6 +174,9 @@ def validate_context(context):
         "blast_radius", "max_blast_radius", "git_path", "controller",
         "known_good_version",
     }
+    if isinstance(context, dict) and "error_budget_remaining" in context:
+        required.add("error_budget_remaining")
+        number(context["error_budget_remaining"], "error_budget_remaining", 0, 1)
     object_fields(context, required, "context")
     for key in ("resource", "namespace", "environment"):
         identifier(context[key], key)
@@ -295,6 +298,20 @@ def plan_matches(plan, change):
     return plan["changes"] == [change]
 
 
+def approval_tier(risk, context):
+    """Budget pressure can raise, but never lower, the action's approval tier."""
+    approval = "senior" if risk == "high" else "operator"
+    budget = context.get("error_budget_remaining")
+    if budget is None:
+        return approval, "Error budget unavailable; the existing human approval tier applies."
+    if budget <= 0.10:
+        return "incident_commander", "Error budget at or below 10%; incident commander required."
+    if budget <= 0.50:
+        return ("senior" if risk == "high" else "engineer",
+                "Error budget at or below 50%; at least engineer approval required.")
+    return approval, "Error budget above 50%; the existing human approval tier applies."
+
+
 def evaluate_remediation(raw_intent, context, plan=None):
     """Fail closed, then emit a proposal requiring independent human approval.
 
@@ -329,9 +346,11 @@ def evaluate_remediation(raw_intent, context, plan=None):
         return RemediationResult(
             "deny", risk, ["Plan does not exactly match intent; unexpected changes blocked."],
         )
+    approval, budget_reason = approval_tier(risk, context)
     return RemediationResult(
         "requires_human_approval", risk,
-        ["Intent matches plan. Human approval is required before a Git PR or apply."],
-        change, "senior" if risk == "high" else "operator",
+        ["Intent matches plan. Human approval is required before a Git PR or apply.",
+         budget_reason],
+        change, approval,
         verification_digest(intent.verification),
     )
