@@ -126,6 +126,10 @@ class RemediationTests(unittest.TestCase):
                            "approved_bounds": {"replicas": False}}.items():
             with self.subTest(key=key), self.assertRaises(ValidationError):
                 evaluate_remediation(self.intent, dict(self.context, **{key: value}), self.plan)
+        for value in (None, True, -0.1, 1.1, "78%", float("nan"), float("inf")):
+            with self.subTest(budget=value), self.assertRaises(ValidationError):
+                self.context["error_budget_remaining"] = value
+                self.evaluate()
 
     def test_memory_checks_are_required_independently(self):
         """Memory checks are required independently."""
@@ -177,6 +181,32 @@ class RemediationTests(unittest.TestCase):
         self.assertEqual(result.decision, "requires_human_approval")
         self.assertEqual(result.approval, "operator")
 
+    def test_budget_pressure_escalates_scale_approval(self):
+        """Exact budget boundaries require the more restrictive reviewer."""
+        self.intent = fixture("payments_scale_intent.json")
+        self.context["hpa_max_replicas"] = 20
+        self.context["current_state"]["hpa.maxReplicas"] = 20
+        self.plan["changes"][0].update(field="replicas", before=10, after=16)
+        for budget, approval in ((1, "operator"), (0.78, "operator"),
+                                 (0.50, "engineer"), (0.11, "engineer"),
+                                 (0.10, "incident_commander"),
+                                 (0.04, "incident_commander"), (0, "incident_commander")):
+            with self.subTest(budget=budget):
+                self.context["error_budget_remaining"] = budget
+                result = self.evaluate()
+                self.assertEqual(result.decision, "requires_human_approval")
+                self.assertEqual(result.approval, approval)
+
+    def test_budget_cannot_weaken_risk_or_bypass_safety(self):
+        """Budget routing preserves senior review and existing hard denials."""
+        for budget in (0.78, 0.50):
+            self.context["error_budget_remaining"] = budget
+            self.assertEqual(self.evaluate().approval, "senior")
+        self.context["error_budget_remaining"] = 0.04
+        self.assertEqual(self.evaluate().approval, "incident_commander")
+        self.context["db_utilization"] = 0.90
+        self.assertEqual(self.evaluate().decision, "deny")
+        self.assertIsNone(self.evaluate().approval)
 
 if __name__ == "__main__":
     unittest.main()

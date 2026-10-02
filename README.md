@@ -214,6 +214,9 @@ Run `examples/verification/checkout_memory_intent.json` with
 `outcome: SUCCESS` and `underlying_problem: unresolved`. OOMKills disappear
 and customer-facing signals improve, while 940Mi of memory remains above 2×
 the 350Mi historical baseline. This is mitigation evidence, not root-cause proof.
+The memory example predeclares an HTTP error target below 2%, so 1.2% passes
+that mitigation contract. It would fail the rollback example's stricter 1%
+target; a successful mitigation does not establish compliance with a 99.9% SLO.
 
 The verifier returns `FAILED` for a triggered failure threshold, a new critical
 alert, unhealthy controller, or unmet success threshold. It returns
@@ -222,9 +225,43 @@ SLO health, or a confounded comparison. It never initiates a rollback. CLI exit
 codes are `0` for `SUCCESS`, `1` for `FAILED`/`INCONCLUSIVE`, and `2` for
 malformed input. These example snapshots are synthetic; production integration
 must query read-only observability sources, enforce freshness and provenance,
-and bind the approved contract to the exact deployment. Error budget and
-historical remediation data could inform a future deterministic approval tier;
-the current policy continues to require human approval for every change.
+and bind the approved contract to the exact deployment. Once required signals
+and change identity are validated, known failures take precedence over missing
+historical baselines or confounded attribution. Infrastructure improvement
+alone cannot claim recovery when user-facing success thresholds already passed.
+
+### Error budgets and approval authority
+
+Trusted remediation context may include `error_budget_remaining`, a finite
+fraction from 0 to 1 (78% remaining is `0.78`). This is the remaining portion of
+the SLO error budget, not the service availability or HTTP success rate. The
+collector computes it over the service's SLO accounting window.
+
+| Budget remaining | Required review |
+| --- | --- |
+| Above 50% | Existing operator or senior tier |
+| Above 10%, through 50% | At least engineer; high-risk actions retain senior review |
+| 10% or below | Incident commander |
+| Field omitted | Existing operator or senior tier, with an unavailable-budget reason |
+
+All changes still require human approval. Budget pressure only raises authority;
+it cannot bypass confidence, blast-radius, capacity, or complete-plan checks.
+Unknown budget retains the earlier conservative policy for compatibility; it
+does not authorize automation. Historical remediation success and automatic
+execution remain future integration work.
+
+Run the reviewed HPA proposal with a synthetic 4% budget:
+
+```bash
+PYTHONPATH=src python3 -m incident_copilot.remediation_cli \
+  --intent examples/remediation/hpa_intent.json \
+  --context examples/verification/exhausted_budget_context.json \
+  --plan examples/remediation/hpa_plan.json
+```
+
+The result requires `incident_commander` approval. Supply this budget through
+trusted context, never through model-generated intent, and bind the complete
+context and plan in the external approval service.
 
 ## Safety model
 

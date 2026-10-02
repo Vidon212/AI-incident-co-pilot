@@ -6,7 +6,7 @@ from pathlib import Path
 import unittest
 
 from incident_copilot.models import ValidationError
-from incident_copilot.remediation import RemediationIntent
+from incident_copilot.remediation import RemediationIntent, verification_digest
 from incident_copilot.verification import evaluate_verification
 
 
@@ -94,6 +94,39 @@ class VerificationTests(unittest.TestCase):
         result = evaluate_verification(intent, observations)
         self.assertEqual(result.outcome, "SUCCESS")
         self.assertEqual(result.underlying_problem, "unresolved")
+
+    def test_infrastructure_recovery_alone_cannot_claim_user_recovery(self):
+        """Passing SLIs before execution cannot gain credit from CPU recovery."""
+        self.intent["verification"]["success_criteria"]["pod_cpu_percent"] = {
+            "op": "lt", "value": 60,
+        }
+        self.observations["execution"]["approved_contract_sha256"] = verification_digest(
+            self.intent["verification"])
+        self.observations["before"]["metrics"].update(
+            checkout_completion_rate=0.995, http_error_rate=0.005,
+            p95_latency_ms=500, pod_cpu_percent=82,
+        )
+        self.observations["after"]["metrics"]["pod_cpu_percent"] = 48
+        self.assertEqual(self.evaluate().outcome, "INCONCLUSIVE")
+
+    def test_known_failure_takes_precedence_over_baseline_gap(self):
+        """Missing historical memory cannot hide alerts or missed service targets."""
+        intent = fixture("verification/checkout_memory_intent.json")
+        for alert, error_rate in ((True, 0.012), (False, 0.03), (False, 0.06)):
+            with self.subTest(alert=alert, error_rate=error_rate):
+                observations = fixture("verification/checkout_memory_observations.json")
+                observations["historical_baseline"] = {}
+                observations["new_critical_alert"] = alert
+                observations["after"]["metrics"]["http_error_rate"] = error_rate
+                result = evaluate_verification(intent, observations)
+                self.assertEqual(result.outcome, "FAILED")
+
+    def test_failed_sli_takes_precedence_over_traffic_confounding(self):
+        """Attribution uncertainty cannot hide an unmet success threshold."""
+        self.observations["after"]["metrics"].update(
+            http_error_rate=0.03, throughput_rps=100,
+        )
+        self.assertEqual(self.evaluate().outcome, "FAILED")
 
     def test_payments_control_signals_are_recorded(self):
         """Scaling requires the five service and capacity signals."""
