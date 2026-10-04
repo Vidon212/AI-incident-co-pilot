@@ -43,10 +43,11 @@ authorization or evidence from a live service.
 
 | Guide | Details |
 | --- | --- |
-| [Architecture and safety](docs/architecture.md) | Capabilities, trust boundaries, and external integrations |
-| [Stages 1–2: triage and context](docs/triage-and-context.md) | Diagnosis evaluation and evidence normalization |
-| [Stage 3: remediation](docs/remediation.md) | Runnable examples, intent schema, policy checks, and plan review |
-| [Stage 4: verification](docs/verification.md) | SLO contracts, control signals, mitigation outcomes, and error budgets |
+| [Architecture and safety](docs/00-architecture-and-safety.md) | Capabilities, trust boundaries, and external integrations |
+| [Stage 1: triage](docs/01-stage-1-triage.md) | Structured diagnosis and rollback policy |
+| [Stage 2: context](docs/02-stage-2-context.md) | Evidence normalization and ranking |
+| [Stage 3: remediation](docs/03-stage-3-remediation.md) | Runnable examples, intent schema, policy checks, and plan review |
+| [Stage 4: verification](docs/04-stage-4-verification.md) | SLO contracts, control signals, mitigation outcomes, and error budgets |
 
 ## Development
 

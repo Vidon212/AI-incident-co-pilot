@@ -97,11 +97,11 @@ execution credential. An external approval service must bind approval to the exa
 reviewed intent, context, plan, and repository revision, re-evaluate after changes,
 and submit through the owning controller. RBAC, authenticated approvals, PR
 creation, and raw-plan adapters are integration work, not implemented runtime
-capabilities. The [local verifier](verification.md) consumes normalized observations but does
+capabilities. The [local verifier](04-stage-4-verification.md) consumes normalized observations but does
 not query production itself.
 
 CLI exit codes: `0` for a review artifact (`requires_plan` or
 `requires_human_approval`), `1` for `deny`/`investigate`, and `2` for malformed input.
 No exit code grants permission to apply.
 
-See [error-budget approval tiers](verification.md#error-budgets-and-approval-authority) for how the remaining budget can raise the required reviewer.
+See [error-budget approval tiers](04-stage-4-verification.md#error-budgets-and-approval-authority) for how the remaining budget can raise the required reviewer.
