@@ -22,10 +22,10 @@ flowchart TD
 
 | Stage | Capability | Guide |
 | --- | --- | --- |
-| 1 | Structured diagnosis validation and rollback policy | [Triage](triage-and-context.md#stage-1-triage-and-policy-evaluation) |
-| 2 | Read-only context normalization and evidence ranking | [Context](triage-and-context.md#stage-2-incident-context-and-evidence) |
-| 3 | Remediation intents, risk checks, plan comparison, and review artifacts | [Remediation](remediation.md) |
-| 4 | Contract-based SLO verification and error-budget approval tiers | [Verification](verification.md) |
+| 1 | Structured diagnosis validation and rollback policy | [Triage](01-stage-1-triage.md) |
+| 2 | Read-only context normalization and evidence ranking | [Context](02-stage-2-context.md) |
+| 3 | Remediation intents, risk checks, plan comparison, and review artifacts | [Remediation](03-stage-3-remediation.md) |
+| 4 | Contract-based SLO verification and error-budget approval tiers | [Verification](04-stage-4-verification.md) |
 
 ## Safety model
 
@@ -51,7 +51,7 @@ RBAC, authenticated approvals, PR creation, and controller execution are externa
 integration work. The architecture diagram shows where those systems would connect;
 it does not imply those integrations are implemented.
 
-See the [trust and integration contract](remediation.md#trust-and-integration-contract)
+See the [trust and integration contract](03-stage-3-remediation.md#trust-and-integration-contract)
 for plan completeness and approval requirements. Successful mitigation is separate
 from root-cause resolution and from meeting the service's long-term SLO; see the
-[memory example](verification.md).
+[memory example](04-stage-4-verification.md).
