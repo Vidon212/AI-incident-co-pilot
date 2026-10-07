@@ -61,3 +61,9 @@ Implementation lives in [`src/incident_copilot`](src/incident_copilot), with
 [`examples`](examples) and [`tests`](tests) alongside it. The project does not call
 an LLM or mutate production; live collection, approval, and execution are external
 integrations.
+
+## License
+
+Copyright 2026 Vinod Loganathan Ramesh Kumar.
+
+Licensed under the [Apache License 2.0](LICENSE).
