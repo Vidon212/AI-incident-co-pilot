@@ -49,9 +49,11 @@ authorization or evidence from a live service.
 | [Stage 3: remediation](docs/03-stage-3-remediation.md) | Runnable examples, intent schema, policy checks, and plan review |
 | [Stage 4: verification](docs/04-stage-4-verification.md) | SLO contracts, control signals, mitigation outcomes, and error budgets |
 
+For local containers and Kubernetes Jobs, see the [deployment guide](docs/05-local-and-kubernetes.md).
+
 ## Development
 
-Run the test suite:
+Run `make help` for setup, examples, container, and Kubernetes targets. Run the test suite:
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests -v
