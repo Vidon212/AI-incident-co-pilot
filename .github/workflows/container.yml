@@ -1,0 +1,32 @@
+name: Container
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Unit tests
+        run: make test
+      - name: Build container
+        run: make docker-build
+      - name: Check packaged CLI examples
+        run: |
+          make -s docker-run > /tmp/triage.json
+          make -s docker-verify > /tmp/verification.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          assert json.loads(Path('/tmp/triage.json').read_text())['decision'] == 'requires_human_approval'
+          assert json.loads(Path('/tmp/verification.json').read_text())['outcome'] == 'SUCCESS'
+          PY

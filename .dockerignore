@@ -1,0 +1,15 @@
+# Only send files needed for packaging and synthetic demo runs.
+**
+!Dockerfile
+!.dockerignore
+!pyproject.toml
+!requirements.txt
+!LICENSE
+!README.md
+!src/
+!src/incident_copilot/
+!src/incident_copilot/**
+!examples/
+!examples/**
+**/__pycache__/
+**/*.py[cod]

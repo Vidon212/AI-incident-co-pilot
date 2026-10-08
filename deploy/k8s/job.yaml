@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: incident-copilot-verify
+  labels:
+    app.kubernetes.io/name: incident-copilot
+spec:
+  # Exit 1 can mean a valid FAILED/INCONCLUSIVE decision; do not retry it.
+  backoffLimit: 0
+  activeDeadlineSeconds: 120
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: incident-copilot
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: verifier
+          image: ai-incident-copilot:local
+          imagePullPolicy: IfNotPresent
+          args:
+            - incident_copilot.verification_cli
+            - --intent
+            - examples/verification/checkout_rollback_intent.json
+            - --observations
+            - examples/verification/checkout_rollback_observations.json
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
