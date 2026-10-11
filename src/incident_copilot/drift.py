@@ -69,6 +69,7 @@ class DriftRecord:
 
     @classmethod
     def from_dict(cls, raw):
+        """Validate and construct a trusted normalized drift record."""
         object_fields(raw, [field.name for field in fields(cls)], "drift_record")
         for key in ("resource", "environment", "field"):
             identifier(raw[key], key)
@@ -117,6 +118,7 @@ class DriftRecord:
 
     @property
     def differs(self):
+        """Report whether the normalized desired and observed values differ."""
         return self.desired != self.observed
 
     @property
@@ -150,6 +152,7 @@ class DriftAssessment:
 
     @classmethod
     def from_dict(cls, raw):
+        """Validate and construct an untrusted AI drift assessment."""
         object_fields(raw, [field.name for field in fields(cls)], "assessment")
         if raw["classification"] not in CLASSIFICATIONS:
             raise ValidationError("classification is not supported")
@@ -181,6 +184,7 @@ class DriftResult:
     approval: str | None
 
     def to_dict(self):
+        """Return a serializable review artifact."""
         return asdict(self)
 
 
@@ -191,11 +195,13 @@ def _policy_expectation(record):
         return "CONTROLLER_STATE", "IGNORE", "LOW"
     if semantics["expected_runtime_adaptation"] and source == "provider":
         return "EXPECTED_DRIFT", "UPDATE_DESIRED_STATE", "MEDIUM"
-    if (source == "manual" and record.provenance["incident_active"]
-            and record.provenance["actor"] is not None
-            and record.provenance["changed_at"] is not None
-            and not record.provenance["auto_reconcile_enabled"]
-            and record.reliability_improved):
+    emergency_provenance = all((
+        source == "manual", record.provenance["incident_active"],
+        record.provenance["actor"] is not None,
+        record.provenance["changed_at"] is not None,
+        not record.provenance["auto_reconcile_enabled"],
+    ))
+    if emergency_provenance and record.reliability_improved:
         return "EMERGENCY_DRIFT", "BACKPORT_TO_GIT", "HIGH"
     if (source == "manual" and not record.provenance["incident_active"]
             and record.provenance["change_ticket"] is None):

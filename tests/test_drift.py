@@ -13,39 +13,48 @@ ROOT = Path(__file__).parents[1]
 
 
 def fixture(name):
+    """Load one published Stage 5 example."""
     with (ROOT / "examples" / "drift" / name).open(encoding="utf-8") as source:
         return json.load(source)
 
 
 class DriftPolicyTests(unittest.TestCase):
+    """Exercise the four drift classes and fail-closed policy boundaries."""
+
     def evaluate(self, case):
+        """Evaluate a named record and assessment pair."""
         return evaluate_drift(fixture(f"{case}-record.json"),
                               fixture(f"{case}-assessment.json"))
 
     def test_controller_state_is_ignored(self):
+        """Expected HPA adaptation must not be reconciled away."""
         result = self.evaluate("a-hpa")
         self.assertEqual(result.classification, "CONTROLLER_STATE")
         self.assertEqual(result.decision, "no_action")
         self.assertFalse(result.requires_human_approval)
 
     def test_suspicious_manual_change_requires_investigation(self):
+        """An unexplained manual change cannot be reconciled automatically."""
         result = self.evaluate("b-manual")
         self.assertEqual(result.classification, "ACCIDENTAL_DRIFT")
         self.assertEqual(result.decision, "investigate")
 
     def test_emergency_change_is_backported_before_reconciliation(self):
+        """A recovery-associated incident change should be proposed for Git."""
         result = self.evaluate("c-emergency")
         self.assertEqual(result.classification, "EMERGENCY_DRIFT")
         self.assertEqual(result.recommended_action, "BACKPORT_TO_GIT")
         self.assertEqual(result.approval, "incident_commander")
 
     def test_provider_expansion_updates_desired_state(self):
+        """Expected irreversible provider expansion should update desired state."""
         result = self.evaluate("d-provider")
         self.assertEqual(result.classification, "EXPECTED_DRIFT")
         self.assertEqual(result.recommended_action, "UPDATE_DESIRED_STATE")
         self.assertIn("Do not reverse", " ".join(result.reasons))
 
     def test_model_cannot_turn_emergency_drift_into_reconciliation(self):
+        """Untrusted advice cannot override the emergency-drift policy."""
         record = fixture("c-emergency-record.json")
         assessment = fixture("c-emergency-assessment.json")
         assessment.update(classification="ACCIDENTAL_DRIFT",
@@ -57,12 +66,14 @@ class DriftPolicyTests(unittest.TestCase):
         self.assertFalse(result.requires_human_approval)
 
     def test_low_confidence_fails_closed(self):
+        """Low confidence routes even otherwise expected state to investigation."""
         assessment = fixture("a-hpa-assessment.json")
         assessment["confidence"] = 0.79
         self.assertEqual(evaluate_drift(fixture("a-hpa-record.json"), assessment).decision,
                          "investigate")
 
     def test_no_difference_needs_no_action(self):
+        """Equal desired and observed values are explicitly reported as no drift."""
         record = fixture("b-manual-record.json")
         record["observed"] = record["desired"]
         result = evaluate_drift(record, fixture("b-manual-assessment.json"))
@@ -70,6 +81,7 @@ class DriftPolicyTests(unittest.TestCase):
         self.assertEqual(result.classification, "NO_DRIFT")
 
     def test_regressing_signals_do_not_validate_emergency_drift(self):
+        """A regression prevents reliability evidence from validating a change."""
         record = fixture("c-emergency-record.json")
         record["reliability"]["after"]["http_error_rate"] = 0.20
         result = evaluate_drift(record, fixture("c-emergency-assessment.json"))
@@ -86,6 +98,7 @@ class DriftPolicyTests(unittest.TestCase):
                 self.assertEqual(evaluate_drift(record, assessment).decision, "investigate")
 
     def test_malformed_inputs_are_rejected(self):
+        """Unknown authority and malformed values fail schema validation."""
         record = fixture("c-emergency-record.json")
         assessment = fixture("c-emergency-assessment.json")
         bad_inputs = []

@@ -10,6 +10,7 @@ from .models import ValidationError
 
 
 def main():
+    """Print a policy-reviewed drift artifact without changing infrastructure."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--record", required=True)
     parser.add_argument("--assessment", required=True)
