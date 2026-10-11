@@ -1,0 +1,25 @@
+{
+  "resource": "production-gke",
+  "environment": "production",
+  "controller": "terraform",
+  "field": "node_pool.max_nodes",
+  "desired": 10,
+  "observed": 20,
+  "provenance": {
+    "source": "manual",
+    "actor": "cloud-console-user",
+    "changed_at": "2026-10-10T16:30:00Z",
+    "change_ticket": null,
+    "incident_active": false,
+    "auto_reconcile_enabled": true
+  },
+  "semantics": {
+    "expected_runtime_adaptation": false,
+    "observed_to_desired_safe": true
+  },
+  "reliability": {
+    "before": {},
+    "after": {},
+    "preferred_direction": {}
+  }
+}

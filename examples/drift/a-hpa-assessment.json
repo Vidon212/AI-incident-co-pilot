@@ -1,0 +1,9 @@
+{
+  "classification": "CONTROLLER_STATE",
+  "confidence": 0.98,
+  "recommended_action": "IGNORE",
+  "risk_of_reconciliation": "LOW",
+  "evidence": [
+    "The HPA changed replicas within its configured range while CPU was above target."
+  ]
+}

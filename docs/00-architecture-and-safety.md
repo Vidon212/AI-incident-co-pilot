@@ -16,6 +16,11 @@ flowchart TD
     Review -. external .-> Approval[Human approval and GitOps execution]
     Approval -. collected observations .-> Verify[Deterministic SLO verification]
     Verify --> Result[Success / Failed / Inconclusive]
+    Desired[Git / Terraform / Crossplane] --> Drift[Deterministic drift detection]
+    Observed[Kubernetes / cloud APIs] --> Drift
+    Provenance[Audit logs / incidents / metrics] --> DriftPolicy[Drift policy]
+    Drift --> DriftPolicy
+    DriftPolicy --> DriftReview[Ignore / investigate / reviewed Git change]
 ```
 
 ## Implemented capabilities
@@ -26,6 +31,7 @@ flowchart TD
 | 2 | Read-only context normalization and evidence ranking | [Context](02-stage-2-context.md) |
 | 3 | Remediation intents, risk checks, plan comparison, and review artifacts | [Remediation](03-stage-3-remediation.md) |
 | 4 | Contract-based SLO verification and error-budget approval tiers | [Verification](04-stage-4-verification.md) |
+| 5 | Provenance-aware configuration and infrastructure drift intelligence | [Drift intelligence](05-stage-5-drift-intelligence.md) |
 
 ## Safety model
 
@@ -38,6 +44,8 @@ flowchart TD
 The application has no Kubernetes credentials, `kubectl` integration, or production
 mutation capability. All supported change proposals require human approval.
 Verification never initiates a rollback.
+Drift review never reconciles a live resource or edits desired state. It emits a
+review artifact, and all proposed Git changes require external human approval.
 
 ## Integration boundaries
 
@@ -50,6 +58,10 @@ Model invocation, live metrics queries, raw Terraform/Kubernetes plan adapters,
 RBAC, authenticated approvals, PR creation, and controller execution are external
 integration work. The architecture diagram shows where those systems would connect;
 it does not imply those integrations are implemented.
+
+Drift collectors must also authenticate audit actors, controller ownership,
+incident linkage, and resource semantics. A model cannot declare its own evidence
+trusted, mark a destructive reversal safe, or grant approval.
 
 See the [trust and integration contract](03-stage-3-remediation.md#trust-and-integration-contract)
 for plan completeness and approval requirements. Successful mitigation is separate

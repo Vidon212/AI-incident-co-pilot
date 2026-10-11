@@ -1,0 +1,25 @@
+{
+  "resource": "payments-api",
+  "environment": "production",
+  "controller": "kubernetes",
+  "field": "replicas",
+  "desired": 5,
+  "observed": 8,
+  "provenance": {
+    "source": "controller",
+    "actor": "horizontal-pod-autoscaler",
+    "changed_at": "2026-10-11T14:02:00Z",
+    "change_ticket": null,
+    "incident_active": false,
+    "auto_reconcile_enabled": true
+  },
+  "semantics": {
+    "expected_runtime_adaptation": true,
+    "observed_to_desired_safe": true
+  },
+  "reliability": {
+    "before": {"cpu_percent": 92},
+    "after": {"cpu_percent": 68},
+    "preferred_direction": {"cpu_percent": "lower"}
+  }
+}

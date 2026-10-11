@@ -1,0 +1,25 @@
+{
+  "resource": "checkout-api",
+  "environment": "production",
+  "controller": "argocd",
+  "field": "memory.limitMi",
+  "desired": 1024,
+  "observed": 2048,
+  "provenance": {
+    "source": "manual",
+    "actor": "sre-oncall@company.com",
+    "changed_at": "2026-10-11T02:14:00Z",
+    "change_ticket": "INC-4821",
+    "incident_active": true,
+    "auto_reconcile_enabled": false
+  },
+  "semantics": {
+    "expected_runtime_adaptation": false,
+    "observed_to_desired_safe": true
+  },
+  "reliability": {
+    "before": {"oomkills": 24, "http_error_rate": 0.18},
+    "after": {"oomkills": 0, "http_error_rate": 0.008},
+    "preferred_direction": {"oomkills": "lower", "http_error_rate": "lower"}
+  }
+}
