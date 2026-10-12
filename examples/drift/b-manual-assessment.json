@@ -1,0 +1,9 @@
+{
+  "classification": "ACCIDENTAL_DRIFT",
+  "confidence": 0.91,
+  "recommended_action": "INVESTIGATE",
+  "risk_of_reconciliation": "MEDIUM",
+  "evidence": [
+    "The manual change has no incident context or approved change ticket."
+  ]
+}

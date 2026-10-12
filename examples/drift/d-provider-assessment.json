@@ -1,0 +1,10 @@
+{
+  "classification": "EXPECTED_DRIFT",
+  "confidence": 0.97,
+  "recommended_action": "UPDATE_DESIRED_STATE",
+  "risk_of_reconciliation": "MEDIUM",
+  "evidence": [
+    "Automatic provider storage expansion is enabled.",
+    "Shrinking storage to the desired value is unsupported."
+  ]
+}

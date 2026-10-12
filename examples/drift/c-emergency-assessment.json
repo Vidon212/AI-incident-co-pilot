@@ -1,0 +1,11 @@
+{
+  "classification": "EMERGENCY_DRIFT",
+  "confidence": 0.96,
+  "recommended_action": "BACKPORT_TO_GIT",
+  "risk_of_reconciliation": "HIGH",
+  "evidence": [
+    "An on-call SRE changed the memory limit during an incident.",
+    "OOMKills and HTTP errors improved after the change.",
+    "Automatic reconciliation was intentionally disabled."
+  ]
+}

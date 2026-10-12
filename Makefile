@@ -6,7 +6,7 @@ IMAGE ?= ai-incident-copilot:local
 K8S_DIR ?= deploy/k8s
 KUBE_CONTEXT ?=
 
-.PHONY: help install test triage context remediation verify docker-build docker-run docker-verify k8s-render k8s-deploy
+.PHONY: help install test triage context remediation verify drift docker-build docker-run docker-verify k8s-render k8s-deploy
 
 help:
 	@echo "install        Create a virtual environment and install requirements.txt"
@@ -15,6 +15,7 @@ help:
 	@echo "context        Normalize incident evidence"
 	@echo "remediation    Review the synthetic HPA plan"
 	@echo "verify         Verify the synthetic checkout rollback"
+	@echo "drift          Review the synthetic emergency drift record"
 	@echo "docker-build   Build IMAGE (default: ai-incident-copilot:local)"
 	@echo "docker-run     Run triage in the container"
 	@echo "docker-verify  Run verification in the container"
@@ -40,6 +41,9 @@ remediation:
 
 verify:
 	PYTHONPATH=src $(PYTHON) -m incident_copilot.verification_cli --intent examples/verification/checkout_rollback_intent.json --observations examples/verification/checkout_rollback_observations.json
+
+drift:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.drift_cli --record examples/drift/c-emergency-record.json --assessment examples/drift/c-emergency-assessment.json
 
 docker-build:
 	docker build -t $(IMAGE) .
