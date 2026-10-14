@@ -21,6 +21,9 @@ flowchart TD
     Provenance[Audit logs / incidents / metrics] --> DriftPolicy[Drift policy]
     Drift --> DriftPolicy
     DriftPolicy --> DriftReview[Ignore / investigate / reviewed Git change]
+    Knowledge[Standards / runbooks / ADRs / implementations] --> Retrieval[Authorized retrieval]
+    Retrieval --> Grounding[Cited reviewed facts]
+    Grounding -. external model integration .-> Intent
 ```
 
 ## Implemented capabilities
@@ -32,6 +35,7 @@ flowchart TD
 | 3 | Remediation intents, risk checks, plan comparison, and review artifacts | [Remediation](03-stage-3-remediation.md) |
 | 4 | Contract-based SLO verification and error-budget approval tiers | [Verification](04-stage-4-verification.md) |
 | 5 | Provenance-aware configuration and infrastructure drift intelligence | [Drift intelligence](05-stage-5-drift-intelligence.md) |
+| 6 | Authority-aware retrieval with citations and contradiction detection | [RAG platform copilot](06-stage-6-rag-platform-copilot.md) |
 
 ## Safety model
 
@@ -46,6 +50,8 @@ mutation capability. All supported change proposals require human approval.
 Verification never initiates a rollback.
 Drift review never reconciles a live resource or edits desired state. It emits a
 review artifact, and all proposed Git changes require external human approval.
+Retrieval emits cited facts rather than executable instructions. Raw document text
+remains untrusted, and grounded recommendations still pass through existing policy.
 
 ## Integration boundaries
 
@@ -62,6 +68,10 @@ it does not imply those integrations are implemented.
 Drift collectors must also authenticate audit actors, controller ownership,
 incident linkage, and resource semantics. A model cannot declare its own evidence
 trusted, mark a destructive reversal safe, or grant approval.
+
+RAG metadata, access scopes, document review state, and extracted facts must be
+provided by authenticated ingestion and identity systems. The local retriever can
+validate their shape but cannot establish their provenance or authenticate a user.
 
 See the [trust and integration contract](03-stage-3-remediation.md#trust-and-integration-contract)
 for plan completeness and approval requirements. Successful mitigation is separate

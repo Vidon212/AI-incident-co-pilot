@@ -1,7 +1,8 @@
 # AI Incident Triage Copilot
 
 A Python reference project for reviewing AI-proposed incident remediation,
-verifying recovery, and explaining configuration drift with trusted provenance.
+verifying recovery, explaining drift, and grounding recommendations in platform
+knowledge.
 
 **The model proposes; deterministic policy decides what can proceed.** The copilot
 runs as a local CLI, Docker container, or Kubernetes Job. It reads JSON snapshots
@@ -15,6 +16,7 @@ approval, and production changes remain external integrations.
 - Compares the full proposed plan and raises approval tiers as error budgets shrink.
 - Verifies user-facing signals, side effects, and recovery controls after a change.
 - Classifies drift using controller, audit, incident, metric, and resource-semantic evidence.
+- Retrieves cited organizational facts using access, authority, freshness, and scope controls.
 
 ## Quick start
 
@@ -36,6 +38,7 @@ make install
 make triage PYTHON=.venv/bin/python
 make verify PYTHON=.venv/bin/python
 make drift PYTHON=.venv/bin/python
+make rag PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -52,9 +55,10 @@ make docker-verify
 ```
 
 The Python path produces `requires_human_approval` for triage, `SUCCESS` for
-verification, and `BACKPORT_TO_GIT` for the emergency drift example. Docker targets
-run triage and verification. These are synthetic results, not authorization to
-execute a remediation. Each command prints JSON and exits; there is no web server.
+verification, `BACKPORT_TO_GIT` for emergency drift, and a `grounded` context packet
+for the RAG example. Docker targets run triage and verification. These are synthetic
+results, not authorization to execute a remediation. Each command prints JSON and
+exits; there is no web server.
 
 ## Documentation
 
@@ -66,7 +70,8 @@ execute a remediation. Each command prints JSON and exits; there is no web serve
 | [Stage 3: remediation](docs/03-stage-3-remediation.md) | Intent contracts, safety checks, and plan review |
 | [Stage 4: verification](docs/04-stage-4-verification.md) | SLO contracts, recovery controls, and error budgets |
 | [Stage 5: drift intelligence](docs/05-stage-5-drift-intelligence.md) | Provenance-aware classification and reconciliation policy |
-| [Local and Kubernetes deployment](docs/06-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 6: RAG platform copilot](docs/06-stage-6-rag-platform-copilot.md) | Authority-aware retrieval, citations, conflicts, and injection boundaries |
+| [Local and Kubernetes deployment](docs/07-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.

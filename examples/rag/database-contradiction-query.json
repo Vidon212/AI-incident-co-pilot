@@ -1,0 +1,8 @@
+{
+  "question": "What is the approved way to create a production GCP database?",
+  "service": "cloudsql",
+  "environment": "production",
+  "as_of": "2026-10-13",
+  "granted_scopes": ["internal", "production"],
+  "top_k": 5
+}
