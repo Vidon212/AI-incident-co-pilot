@@ -20,6 +20,7 @@ make context PYTHON=.venv/bin/python
 make remediation PYTHON=.venv/bin/python
 make verify PYTHON=.venv/bin/python
 make drift PYTHON=.venv/bin/python
+make rag PYTHON=.venv/bin/python
 ```
 
 Replace `python3.13` with your installed Python 3.11+ executable. `requirements.txt`
@@ -29,7 +30,8 @@ index access. The evaluation commands need no API keys or network access.
 
 `make triage` and `make remediation` return review artifacts requiring human
 approval. `make verify` returns `SUCCESS` using synthetic rollback observations,
-and `make drift` recommends back-porting a synthetic emergency change to Git.
+`make drift` recommends back-porting a synthetic emergency change to Git, and
+`make rag` emits a cited organizational context packet.
 Use `PYTHON` to select an interpreter and `VENV` to change the install directory.
 
 ## Local Docker run
@@ -147,6 +149,7 @@ provenance, and approval binding in the external workflow.
 | Remediation | `requires_plan` or `requires_human_approval` | `deny` or `investigate` | Invalid input |
 | Verification | `SUCCESS` | `FAILED` or `INCONCLUSIVE` | Invalid input |
 | Drift | `no_action` or `requires_human_approval` | `investigate` | Invalid input |
+| RAG | `grounded` | `investigate` or `insufficient_context` | Invalid input |
 
 Docker preserves the CLI exit status. Make may report its own error status for a
 failed recipe; read the JSON result as well. Kubernetes marks a nonzero exit as a

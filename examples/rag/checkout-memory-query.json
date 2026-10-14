@@ -1,0 +1,8 @@
+{
+  "question": "checkout-api needs more memory. Can I increase it from 1Gi to 2Gi?",
+  "service": "checkout-api",
+  "environment": "production",
+  "as_of": "2026-10-13",
+  "granted_scopes": ["internal", "production"],
+  "top_k": 5
+}

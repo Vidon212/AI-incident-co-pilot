@@ -1,0 +1,57 @@
+[
+  {
+    "id": "database-platform-standard",
+    "title": "Production Database Standard",
+    "type": "platform-standard",
+    "service": "cloudsql",
+    "environment": "production",
+    "team": "platform",
+    "version": "2.4",
+    "status": "approved",
+    "last_reviewed": "2026-09-15",
+    "required_scopes": ["internal", "production"],
+    "similarity": 0.91,
+    "production_adoption": 1.0,
+    "content": "Provision production Cloud SQL with the approved Terraform module.",
+    "facts": [
+      {"topic": "database.provisioning.method", "value": "terraform", "kind": "requirement"}
+    ]
+  },
+  {
+    "id": "cloudsql-crossplane-composition",
+    "title": "Cloud SQL Crossplane Composition",
+    "type": "composition",
+    "service": "cloudsql",
+    "environment": "production",
+    "team": "platform",
+    "version": "3.2",
+    "status": "current",
+    "last_reviewed": "2026-10-02",
+    "required_scopes": ["internal", "production"],
+    "similarity": 0.89,
+    "production_adoption": 0.80,
+    "content": "This composition is used by 80 percent of production services.",
+    "facts": [
+      {"topic": "database.provisioning.method", "value": "crossplane", "kind": "implementation"},
+      {"topic": "database.production.adoption", "value": 0.8, "kind": "operational"}
+    ]
+  },
+  {
+    "id": "deprecated-jenkins-process",
+    "title": "Legacy Jenkins Database Process",
+    "type": "runbook",
+    "service": "cloudsql",
+    "environment": "production",
+    "team": "platform",
+    "version": "1.0",
+    "status": "deprecated",
+    "last_reviewed": "2023-04-20",
+    "required_scopes": ["internal"],
+    "similarity": 0.99,
+    "production_adoption": 0.0,
+    "content": "Use the legacy Jenkins job.",
+    "facts": [
+      {"topic": "database.provisioning.method", "value": "jenkins", "kind": "historical"}
+    ]
+  }
+]
