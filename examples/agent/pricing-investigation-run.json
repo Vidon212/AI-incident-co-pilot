@@ -1,0 +1,173 @@
+{
+  "steps": [
+    {
+      "call": {
+        "id": "checkout-health",
+        "tool": "get_service_health",
+        "arguments": {"service": "checkout-api", "environment": "production"}
+      },
+      "result": {
+        "call_id": "checkout-health",
+        "status": "ok",
+        "data": {
+          "service": "checkout-api",
+          "cpu_percent": 37,
+          "memory_percent": 51,
+          "http_5xx_rate": 0.13,
+          "p99_latency_ms": 3900,
+          "database_latency_ms": 85,
+          "pods_healthy": true
+        },
+        "source": "metrics",
+        "observed_at": "2026-10-18T18:50:00Z",
+        "redaction_applied": true,
+        "truncated": false
+      }
+    },
+    {
+      "call": {
+        "id": "checkout-dependencies",
+        "tool": "get_dependency_health",
+        "arguments": {"service": "checkout-api", "environment": "production"}
+      },
+      "result": {
+        "call_id": "checkout-dependencies",
+        "status": "ok",
+        "data": {
+          "service": "checkout-api",
+          "dependencies": [
+            {"service": "inventory-api", "status": "healthy", "p99_latency_ms": 120},
+            {"service": "payment-api", "status": "healthy", "p99_latency_ms": 160},
+            {"service": "pricing-api", "status": "unhealthy", "p99_latency_ms": 5100}
+          ]
+        },
+        "source": "dependency-catalog",
+        "observed_at": "2026-10-18T18:51:00Z",
+        "redaction_applied": true,
+        "truncated": false
+      }
+    },
+    {
+      "call": {
+        "id": "pricing-health",
+        "tool": "get_service_health",
+        "arguments": {"service": "pricing-api", "environment": "production"}
+      },
+      "result": {
+        "call_id": "pricing-health",
+        "status": "ok",
+        "data": {
+          "service": "pricing-api",
+          "cpu_percent": 32,
+          "memory_percent": 44,
+          "http_5xx_rate": 0.01,
+          "p99_latency_ms": 5100,
+          "database_latency_ms": 4800,
+          "pods_healthy": true
+        },
+        "source": "metrics",
+        "observed_at": "2026-10-18T18:52:00Z",
+        "redaction_applied": true,
+        "truncated": false
+      }
+    },
+    {
+      "call": {
+        "id": "pricing-changes",
+        "tool": "get_recent_changes",
+        "arguments": {
+          "service": "pricing-api",
+          "environment": "production",
+          "window_minutes": 30
+        }
+      },
+      "result": {
+        "call_id": "pricing-changes",
+        "status": "ok",
+        "data": {
+          "service": "pricing-api",
+          "changes": [
+            {
+              "type": "cloudsql_flag",
+              "time": "2026-10-18T18:47:00Z",
+              "source": "terraform",
+              "field": "cloudsql.max_connections",
+              "before": 500,
+              "after": 300
+            }
+          ]
+        },
+        "source": "change-audit",
+        "observed_at": "2026-10-18T18:53:00Z",
+        "redaction_applied": true,
+        "truncated": false
+      }
+    },
+    {
+      "call": {
+        "id": "pricing-database",
+        "tool": "get_cloudsql_health",
+        "arguments": {"resource": "pricing-prod", "environment": "production"}
+      },
+      "result": {
+        "call_id": "pricing-database",
+        "status": "ok",
+        "data": {
+          "resource": "pricing-prod",
+          "cpu_percent": 34,
+          "connections_used": 298,
+          "connections_limit": 300,
+          "connection_wait_ms": 3900,
+          "query_latency_ms": 110
+        },
+        "source": "cloudsql",
+        "observed_at": "2026-10-18T18:54:00Z",
+        "redaction_applied": true,
+        "truncated": false
+      }
+    },
+    {
+      "call": {
+        "id": "restore-connections",
+        "tool": "propose_infrastructure_change",
+        "arguments": {
+          "resource": "pricing-prod",
+          "environment": "production",
+          "field": "cloudsql.max_connections",
+          "current_state": 300,
+          "desired_state": 500,
+          "evidence_call_ids": [
+            "checkout-health",
+            "checkout-dependencies",
+            "pricing-health",
+            "pricing-changes",
+            "pricing-database"
+          ],
+          "expected_outcome": "Reduce connection acquisition wait and restore pricing latency.",
+          "incident_id": "INC-731"
+        }
+      },
+      "result": {
+        "call_id": "restore-connections",
+        "status": "proposed",
+        "data": {"proposal_only": true},
+        "source": "policy",
+        "observed_at": "2026-10-18T18:55:00Z",
+        "redaction_applied": true,
+        "truncated": false
+      }
+    }
+  ],
+  "hypothesis": {
+    "summary": "The Terraform connection-limit reduction saturated the pricing database pool, increasing checkout latency and errors.",
+    "confidence": 0.87,
+    "evidence_call_ids": [
+      "checkout-health",
+      "checkout-dependencies",
+      "pricing-health",
+      "pricing-changes",
+      "pricing-database"
+    ],
+    "recommended_action": "propose_infrastructure_change"
+  }
+}

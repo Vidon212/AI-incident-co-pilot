@@ -1,0 +1,14 @@
+{
+  "changes": [
+    {
+      "resource": "pricing-prod",
+      "environment": "production",
+      "controller": "terraform",
+      "path": "infra/production/cloudsql/pricing.tf",
+      "operation": "update",
+      "field": "cloudsql.max_connections",
+      "before": 300,
+      "after": 500
+    }
+  ]
+}

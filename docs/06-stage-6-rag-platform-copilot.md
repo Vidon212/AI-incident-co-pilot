@@ -97,3 +97,5 @@ CLI exit codes are `0` for `grounded`, `1` for `investigate` or
 for a model, not an execution credential. Any downstream remediation still requires
 the Stage 3 plan comparison, human approval, Stage 4 verification, and relevant
 Stage 5 drift checks.
+
+Continue with [Stage 7: tool-using platform agents](07-stage-7-tool-using-agents.md).

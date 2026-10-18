@@ -24,6 +24,13 @@ flowchart TD
     Knowledge[Standards / runbooks / ADRs / implementations] --> Retrieval[Authorized retrieval]
     Retrieval --> Grounding[Cited reviewed facts]
     Grounding -. external model integration .-> Intent
+    Context --> Agent[Bounded agent trace]
+    Grounding --> Agent
+    Tools[Purpose-built platform tools] --> Agent
+    Agent --> Hypothesis[Evidence-bound hypothesis]
+    Hypothesis --> AgentPolicy[Tool and proposal policy]
+    Plan --> AgentPolicy
+    AgentPolicy --> Review
 ```
 
 ## Implemented capabilities
@@ -36,6 +43,7 @@ flowchart TD
 | 4 | Contract-based SLO verification and error-budget approval tiers | [Verification](04-stage-4-verification.md) |
 | 5 | Provenance-aware configuration and infrastructure drift intelligence | [Drift intelligence](05-stage-5-drift-intelligence.md) |
 | 6 | Authority-aware retrieval with citations and contradiction detection | [RAG platform copilot](06-stage-6-rag-platform-copilot.md) |
+| 7 | Typed, bounded tool traces with authorization and intent-to-plan validation | [Tool-using agents](07-stage-7-tool-using-agents.md) |
 
 ## Safety model
 
@@ -52,6 +60,9 @@ Drift review never reconciles a live resource or edits desired state. It emits a
 review artifact, and all proposed Git changes require external human approval.
 Retrieval emits cited facts rather than executable instructions. Raw document text
 remains untrusted, and grounded recommendations still pass through existing policy.
+Agent review accepts only purpose-built tools with exact schemas. It rejects raw
+shell and infrastructure primitives, enforces service and environment scope, binds
+results to calls, and emits proposals rather than executing them.
 
 ## Integration boundaries
 
@@ -72,6 +83,13 @@ trusted, mark a destructive reversal safe, or grant approval.
 RAG metadata, access scopes, document review state, and extracted facts must be
 provided by authenticated ingestion and identity systems. The local retriever can
 validate their shape but cannot establish their provenance or authenticate a user.
+
+The Stage 7 evaluator reviews a supplied trace; it does not invoke the tools. A real
+platform tool API must authenticate the principal, enforce ownership and data-access
+policy, redact secrets, cap queries and results, and produce immutable audit records.
+PR creation, plan generation, approval binding, and controller execution remain
+external. The full plan must be trusted and complete before policy can compare it
+with the agent's single proposed change.
 
 See the [trust and integration contract](03-stage-3-remediation.md#trust-and-integration-contract)
 for plan completeness and approval requirements. Successful mitigation is separate

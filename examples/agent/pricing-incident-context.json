@@ -1,0 +1,33 @@
+{
+  "incident_id": "INC-731",
+  "principal": "platform-agent@company.com",
+  "primary_service": "checkout-api",
+  "environment": "production",
+  "readable_services": ["checkout-api", "pricing-api"],
+  "proposable_services": ["pricing-api"],
+  "granted_tools": [
+    "get_service_health",
+    "get_dependency_health",
+    "get_recent_changes",
+    "get_cloudsql_health",
+    "get_logs",
+    "propose_infrastructure_change",
+    "request_service_restart"
+  ],
+  "resources": [
+    {
+      "resource": "pricing-prod",
+      "service": "pricing-api",
+      "controller": "terraform",
+      "path": "infra/production/cloudsql/pricing.tf",
+      "allowed_fields": ["cloudsql.max_connections"]
+    }
+  ],
+  "limits": {
+    "max_steps": 8,
+    "max_window_minutes": 30,
+    "max_result_items": 20,
+    "max_result_bytes": 4096,
+    "max_log_query_chars": 120
+  }
+}
