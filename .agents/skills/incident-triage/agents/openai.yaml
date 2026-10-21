@@ -1,3 +1,3 @@
 interface:
-  display_name: "Incident Triage"
+  display_name: "AI Incident Triage"
   short_description: "Safely diagnose Kubernetes incidents"
