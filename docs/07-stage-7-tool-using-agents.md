@@ -115,4 +115,4 @@ repository revision before CI/CD can execute anything.
 CLI exit codes are `0` for `requires_plan` or `requires_human_approval`, `1` for
 `deny` or `investigate`, and `2` for malformed input.
 
-Continue with [local and Kubernetes deployment](08-local-and-kubernetes.md).
+Continue with [multi-hypothesis incident investigation](08-stage-8-multi-hypothesis-investigation.md).
