@@ -2,7 +2,8 @@
 
 A Python reference project for reviewing AI-proposed incident remediation,
 verifying recovery, explaining drift, and grounding recommendations in platform
-knowledge.
+knowledge. It also reviews multi-hypothesis investigations before a remediation
+enters policy review.
 
 **The model proposes; deterministic policy decides what can proceed.** The copilot
 runs as a local CLI, Docker container, or Kubernetes Job. It reads JSON snapshots
@@ -18,6 +19,7 @@ approval, and production changes remain external integrations.
 - Classifies drift using controller, audit, incident, metric, and resource-semantic evidence.
 - Retrieves cited organizational facts using access, authority, freshness, and scope controls.
 - Reviews bounded tool traces and binds infrastructure proposals to evidence and complete plans.
+- Tests competing incident hypotheses against causal evidence and explicit falsification.
 
 ## Quick start
 
@@ -41,6 +43,7 @@ make verify PYTHON=.venv/bin/python
 make drift PYTHON=.venv/bin/python
 make rag PYTHON=.venv/bin/python
 make agent PYTHON=.venv/bin/python
+make investigate PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -59,7 +62,8 @@ make docker-verify
 The Python path produces `requires_human_approval` for triage, `SUCCESS` for
 verification, `BACKPORT_TO_GIT` for emergency drift, a `grounded` context packet
 for the RAG example, and `requires_human_approval` for the agent proposal. Docker
-targets run triage and verification. These are synthetic results, not authorization
+targets run triage and verification. The investigation example returns
+`ready_for_remediation_review`. These are synthetic results, not authorization
 to execute a remediation. Each command prints JSON and exits; there is no web server.
 
 ## Documentation
@@ -74,7 +78,8 @@ to execute a remediation. Each command prints JSON and exits; there is no web se
 | [Stage 5: drift intelligence](docs/05-stage-5-drift-intelligence.md) | Provenance-aware classification and reconciliation policy |
 | [Stage 6: RAG platform copilot](docs/06-stage-6-rag-platform-copilot.md) | Authority-aware retrieval, citations, conflicts, and injection boundaries |
 | [Stage 7: tool-using agents](docs/07-stage-7-tool-using-agents.md) | Typed platform tools, bounded investigation, authorization, and plan binding |
-| [Local and Kubernetes deployment](docs/08-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 8: multi-hypothesis investigation](docs/08-stage-8-multi-hypothesis-investigation.md) | Competing hypotheses, falsification, causal evidence, and stopping rules |
+| [Local and Kubernetes deployment](docs/09-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.

@@ -1,0 +1,13 @@
+{
+  "incident_id": "INC-808",
+  "primary_service": "checkout-api",
+  "database_resource": "checkout-prod",
+  "environment": "production",
+  "started_at": "2026-10-26T18:51:00Z",
+  "budget": {
+    "max_tool_calls": 12,
+    "max_investigation_seconds": 300,
+    "minimum_action_confidence": 0.9,
+    "minimum_independent_evidence": 3
+  }
+}

@@ -31,6 +31,11 @@ flowchart TD
     Hypothesis --> AgentPolicy[Tool and proposal policy]
     Plan --> AgentPolicy
     AgentPolicy --> Review
+    Context --> Investigation[Multi-hypothesis investigation]
+    Tools --> Investigation
+    Investigation --> Falsification[Confidence updates and falsification]
+    Falsification --> Stop[Deterministic stopping policy]
+    Stop --> Review
 ```
 
 ## Implemented capabilities
@@ -44,6 +49,7 @@ flowchart TD
 | 5 | Provenance-aware configuration and infrastructure drift intelligence | [Drift intelligence](05-stage-5-drift-intelligence.md) |
 | 6 | Authority-aware retrieval with citations and contradiction detection | [RAG platform copilot](06-stage-6-rag-platform-copilot.md) |
 | 7 | Typed, bounded tool traces with authorization and intent-to-plan validation | [Tool-using agents](07-stage-7-tool-using-agents.md) |
+| 8 | Competing hypotheses, causal evidence, falsification, and stopping rules | [Multi-hypothesis investigation](08-stage-8-multi-hypothesis-investigation.md) |
 
 ## Safety model
 
@@ -63,6 +69,9 @@ remains untrusted, and grounded recommendations still pass through existing poli
 Agent review accepts only purpose-built tools with exact schemas. It rejects raw
 shell and infrastructure primitives, enforces service and environment scope, binds
 results to calls, and emits proposals rather than executing them.
+Investigation review requires competing hypotheses, continuous confidence updates,
+independent causal evidence, and a falsification test before a recommendation can
+enter remediation review. Budget expiry produces an inconclusive result.
 
 ## Integration boundaries
 
@@ -90,6 +99,12 @@ policy, redact secrets, cap queries and results, and produce immutable audit rec
 PR creation, plan generation, approval binding, and controller execution remain
 external. The full plan must be trusted and complete before policy can compare it
 with the agent's single proposed change.
+
+The Stage 8 evaluator also reviews a supplied trace rather than invoking tools. Its
+confidence values are untrusted model output; deterministic checks independently
+verify the narrow evidence pattern. Real collectors must authenticate every result,
+and the resulting recommendation still passes remediation policy, plan comparison,
+human approval, controller execution, and SLO verification.
 
 See the [trust and integration contract](03-stage-3-remediation.md#trust-and-integration-contract)
 for plan completeness and approval requirements. Successful mitigation is separate

@@ -1,0 +1,239 @@
+{
+  "hypotheses": [
+    {
+      "id": "H1",
+      "summary": "The v2.21 application deployment introduced a regression.",
+      "confidence": 0.35
+    },
+    {
+      "id": "H2",
+      "summary": "The Cloud SQL connection limit reduction exhausted the connection pool.",
+      "confidence": 0.35
+    },
+    {
+      "id": "H3",
+      "summary": "Node contention after autoscaling degraded the service.",
+      "confidence": 0.15
+    },
+    {
+      "id": "H4",
+      "summary": "A downstream dependency degraded independently.",
+      "confidence": 0.15
+    }
+  ],
+  "evidence": [
+    {
+      "question": "Did only the newly deployed version become unhealthy?",
+      "discriminates": ["H1", "H2"],
+      "falsification_target": null,
+      "call": {
+        "id": "checkout-versions",
+        "tool": "compare_versions",
+        "arguments": {
+          "service": "checkout-api",
+          "environment": "production",
+          "versions": ["v2.20", "v2.21"]
+        }
+      },
+      "result": {
+        "call_id": "checkout-versions",
+        "status": "ok",
+        "source": "metrics-by-version",
+        "observed_at": "2026-10-26T18:53:00Z",
+        "data": {
+          "service": "checkout-api",
+          "versions": [
+            {
+              "version": "v2.20",
+              "http_5xx_rate": 0.172,
+              "p99_latency_ms": 5500,
+              "connection_wait_ms": 4400
+            },
+            {
+              "version": "v2.21",
+              "http_5xx_rate": 0.186,
+              "p99_latency_ms": 5900,
+              "connection_wait_ms": 4700
+            }
+          ]
+        }
+      },
+      "hypothesis_updates": [
+        {"id": "H1", "before": 0.35, "after": 0.12},
+        {"id": "H2", "before": 0.35, "after": 0.48},
+        {"id": "H3", "before": 0.15, "after": 0.2},
+        {"id": "H4", "before": 0.15, "after": 0.2}
+      ]
+    },
+    {
+      "question": "Is the database connection pool saturated without database compute saturation?",
+      "discriminates": ["H2", "H3", "H4"],
+      "falsification_target": null,
+      "call": {
+        "id": "checkout-database",
+        "tool": "get_cloudsql_health",
+        "arguments": {
+          "resource": "checkout-prod",
+          "environment": "production"
+        }
+      },
+      "result": {
+        "call_id": "checkout-database",
+        "status": "ok",
+        "source": "cloudsql",
+        "observed_at": "2026-10-26T18:54:00Z",
+        "data": {
+          "resource": "checkout-prod",
+          "cpu_percent": 42,
+          "memory_percent": 54,
+          "connections_used": 299,
+          "connections_limit": 300,
+          "connection_wait_ms": 4500,
+          "query_p99_ms": 130
+        }
+      },
+      "hypothesis_updates": [
+        {"id": "H1", "before": 0.12, "after": 0.08},
+        {"id": "H2", "before": 0.48, "after": 0.72},
+        {"id": "H3", "before": 0.2, "after": 0.1},
+        {"id": "H4", "before": 0.2, "after": 0.1}
+      ]
+    },
+    {
+      "question": "Did a recent controlled change reduce the connection ceiling?",
+      "discriminates": ["H1", "H2"],
+      "falsification_target": null,
+      "call": {
+        "id": "checkout-changes",
+        "tool": "get_recent_changes",
+        "arguments": {
+          "service": "checkout-api",
+          "environment": "production",
+          "window_minutes": 30
+        }
+      },
+      "result": {
+        "call_id": "checkout-changes",
+        "status": "ok",
+        "source": "change-audit",
+        "observed_at": "2026-10-26T18:55:00Z",
+        "data": {
+          "service": "checkout-api",
+          "changes": [
+            {
+              "time": "2026-10-26T18:48:00Z",
+              "source": "terraform",
+              "resource": "checkout-prod",
+              "field": "cloudsql.max_connections",
+              "before": 500,
+              "after": 300
+            }
+          ]
+        }
+      },
+      "hypothesis_updates": [
+        {"id": "H1", "before": 0.08, "after": 0.04},
+        {"id": "H2", "before": 0.72, "after": 0.86},
+        {"id": "H3", "before": 0.1, "after": 0.05},
+        {"id": "H4", "before": 0.1, "after": 0.05}
+      ]
+    },
+    {
+      "question": "Would observed demand have exceeded the new limit before waits and errors rose?",
+      "discriminates": ["H1", "H2", "H3", "H4"],
+      "falsification_target": "H2",
+      "call": {
+        "id": "checkout-connection-timeline",
+        "tool": "get_connection_timeline",
+        "arguments": {
+          "resource": "checkout-prod",
+          "environment": "production",
+          "window_minutes": 15
+        }
+      },
+      "result": {
+        "call_id": "checkout-connection-timeline",
+        "status": "ok",
+        "source": "cloudsql-timeseries",
+        "observed_at": "2026-10-26T18:56:00Z",
+        "data": {
+          "resource": "checkout-prod",
+          "change_at": "2026-10-26T18:48:00Z",
+          "samples": [
+            {
+              "time": "2026-10-26T18:40:00Z",
+              "connections_used": 361,
+              "connections_limit": 500,
+              "connection_wait_ms": 120,
+              "http_5xx_rate": 0.01
+            },
+            {
+              "time": "2026-10-26T18:45:00Z",
+              "connections_used": 374,
+              "connections_limit": 500,
+              "connection_wait_ms": 180,
+              "http_5xx_rate": 0.01
+            },
+            {
+              "time": "2026-10-26T18:49:00Z",
+              "connections_used": 299,
+              "connections_limit": 300,
+              "connection_wait_ms": 800,
+              "http_5xx_rate": 0.02
+            },
+            {
+              "time": "2026-10-26T18:50:00Z",
+              "connections_used": 299,
+              "connections_limit": 300,
+              "connection_wait_ms": 3100,
+              "http_5xx_rate": 0.03
+            },
+            {
+              "time": "2026-10-26T18:51:00Z",
+              "connections_used": 299,
+              "connections_limit": 300,
+              "connection_wait_ms": 4500,
+              "http_5xx_rate": 0.18
+            }
+          ]
+        }
+      },
+      "hypothesis_updates": [
+        {"id": "H1", "before": 0.04, "after": 0.02},
+        {"id": "H2", "before": 0.86, "after": 0.94},
+        {"id": "H3", "before": 0.05, "after": 0.02},
+        {"id": "H4", "before": 0.05, "after": 0.02}
+      ]
+    }
+  ],
+  "elapsed_seconds": 240,
+  "final_assessment": {
+    "primary_hypothesis_id": "H2",
+    "confidence": 0.94,
+    "causal_change": {
+      "resource": "checkout-prod",
+      "field": "cloudsql.max_connections",
+      "before": 500,
+      "after": 300,
+      "evidence_call_id": "checkout-changes"
+    },
+    "supporting_evidence_call_ids": [
+      "checkout-versions",
+      "checkout-database",
+      "checkout-changes",
+      "checkout-connection-timeline"
+    ],
+    "recommended_action": {
+      "action": "restore_previous_value",
+      "resource": "checkout-prod",
+      "field": "cloudsql.max_connections",
+      "from": 300,
+      "to": 500
+    },
+    "verification_criteria": [
+      {"metric": "connection_wait_ms", "operator": "lt", "threshold": 500},
+      {"metric": "http_5xx_rate", "operator": "lt", "threshold": 0.02},
+      {"metric": "p99_latency_ms", "operator": "lt", "threshold": 1000}
+    ]
+  }
+}
