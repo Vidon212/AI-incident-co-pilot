@@ -1,0 +1,8 @@
+{
+  "minimum_accuracy": 0.8,
+  "maximum_false_remediation_rate": 0.02,
+  "maximum_mean_tool_calls": 8,
+  "maximum_mean_diagnosis_ms": 150000,
+  "maximum_total_cost_usd": 0.15,
+  "maximum_calibration_ece": 0.15
+}
