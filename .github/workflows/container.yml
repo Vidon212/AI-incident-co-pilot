@@ -24,9 +24,17 @@ jobs:
         run: |
           make -s docker-run > /tmp/triage.json
           make -s docker-verify > /tmp/verification.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.evaluation_cli \
+            --dataset examples/evaluation/incidents.json \
+            --candidate examples/evaluation/candidate.json \
+            --baseline examples/evaluation/baseline.json \
+            --policy examples/evaluation/promotion-policy.json > /tmp/evaluation.json
           python - <<'PY'
           import json
           from pathlib import Path
           assert json.loads(Path('/tmp/triage.json').read_text())['decision'] == 'requires_human_approval'
           assert json.loads(Path('/tmp/verification.json').read_text())['outcome'] == 'SUCCESS'
+          assert json.loads(Path('/tmp/evaluation.json').read_text())['decision'] == 'pass'
           PY

@@ -1,0 +1,735 @@
+{
+  "agent_version": "sre-agent-v17",
+  "configuration": {
+    "model": "model-b",
+    "prompt": "prompt17",
+    "retrieval": "runbooks-v1",
+    "tools": "platform-tools-v1",
+    "policy": "remediation-v1"
+  },
+  "runs": [
+    {
+      "incident_id": "INC-2041",
+      "spans": [
+        {
+          "id": "root",
+          "parent_id": null,
+          "name": "incident",
+          "start_ms": 0,
+          "duration_ms": 750000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "context",
+          "parent_id": "root",
+          "name": "context.build",
+          "start_ms": 0,
+          "duration_ms": 420,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "generate",
+          "parent_id": "root",
+          "name": "hypothesis.generate",
+          "start_ms": 420,
+          "duration_ms": 1800,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "health",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2220,
+          "duration_ms": 290,
+          "status": "ok",
+          "tool": "get_service_health",
+          "evidence_ids": [
+            "INC-2041-health"
+          ]
+        },
+        {
+          "id": "comparison",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2510,
+          "duration_ms": 650,
+          "status": "ok",
+          "tool": "compare_versions",
+          "evidence_ids": [
+            "INC-2041-comparison"
+          ]
+        },
+        {
+          "id": "changes",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 3160,
+          "duration_ms": 310,
+          "status": "ok",
+          "tool": "get_recent_changes",
+          "evidence_ids": [
+            "INC-2041-change"
+          ]
+        },
+        {
+          "id": "update",
+          "parent_id": "root",
+          "name": "hypothesis.update",
+          "start_ms": 123620,
+          "duration_ms": 1300,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "select",
+          "parent_id": "root",
+          "name": "hypothesis.select",
+          "start_ms": 124920,
+          "duration_ms": 80,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "proposal",
+          "parent_id": "root",
+          "name": "remediation.propose",
+          "start_ms": 125000,
+          "duration_ms": 1100,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "policy",
+          "parent_id": "root",
+          "name": "policy.evaluate",
+          "start_ms": 126100,
+          "duration_ms": 40,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "verify",
+          "parent_id": "root",
+          "name": "verification",
+          "start_ms": 126140,
+          "duration_ms": 600000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "decision": {
+        "status": "diagnosed",
+        "hypotheses": [
+          {
+            "cause": "connection_exhaustion",
+            "confidence": 0.94
+          },
+          {
+            "cause": "application_regression",
+            "confidence": 0.04
+          }
+        ],
+        "causal_change": "max_connections_500_to_300",
+        "evidence_ids": [
+          "INC-2041-health",
+          "INC-2041-comparison",
+          "INC-2041-change"
+        ],
+        "selected_action": "restore_connection_limit",
+        "policy_result": "human_approval_required"
+      },
+      "outcome": {
+        "human_accepted": true,
+        "remediation_success": true,
+        "slo_improvement": 0.12
+      },
+      "usage": {
+        "tokens": 2100,
+        "cost_usd": 0.021
+      }
+    },
+    {
+      "incident_id": "INC-2042",
+      "spans": [
+        {
+          "id": "root",
+          "parent_id": null,
+          "name": "incident",
+          "start_ms": 0,
+          "duration_ms": 750000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "context",
+          "parent_id": "root",
+          "name": "context.build",
+          "start_ms": 0,
+          "duration_ms": 420,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "generate",
+          "parent_id": "root",
+          "name": "hypothesis.generate",
+          "start_ms": 420,
+          "duration_ms": 1800,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "health",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2220,
+          "duration_ms": 290,
+          "status": "ok",
+          "tool": "get_service_health",
+          "evidence_ids": [
+            "INC-2042-health"
+          ]
+        },
+        {
+          "id": "comparison",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2510,
+          "duration_ms": 650,
+          "status": "ok",
+          "tool": "compare_versions",
+          "evidence_ids": [
+            "INC-2042-comparison"
+          ]
+        },
+        {
+          "id": "changes",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 3160,
+          "duration_ms": 310,
+          "status": "ok",
+          "tool": "get_recent_changes",
+          "evidence_ids": [
+            "INC-2042-change"
+          ]
+        },
+        {
+          "id": "update",
+          "parent_id": "root",
+          "name": "hypothesis.update",
+          "start_ms": 123620,
+          "duration_ms": 1300,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "select",
+          "parent_id": "root",
+          "name": "hypothesis.select",
+          "start_ms": 124920,
+          "duration_ms": 80,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "proposal",
+          "parent_id": "root",
+          "name": "remediation.propose",
+          "start_ms": 125000,
+          "duration_ms": 1100,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "policy",
+          "parent_id": "root",
+          "name": "policy.evaluate",
+          "start_ms": 126100,
+          "duration_ms": 40,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "verify",
+          "parent_id": "root",
+          "name": "verification",
+          "start_ms": 126140,
+          "duration_ms": 600000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "decision": {
+        "status": "diagnosed",
+        "hypotheses": [
+          {
+            "cause": "slow_database_queries",
+            "confidence": 0.94
+          },
+          {
+            "cause": "application_regression",
+            "confidence": 0.04
+          }
+        ],
+        "causal_change": "missing_query_index",
+        "evidence_ids": [
+          "INC-2042-health",
+          "INC-2042-comparison",
+          "INC-2042-change"
+        ],
+        "selected_action": "propose_query_index",
+        "policy_result": "human_approval_required"
+      },
+      "outcome": {
+        "human_accepted": true,
+        "remediation_success": true,
+        "slo_improvement": 0.12
+      },
+      "usage": {
+        "tokens": 2100,
+        "cost_usd": 0.021
+      }
+    },
+    {
+      "incident_id": "INC-2043",
+      "spans": [
+        {
+          "id": "root",
+          "parent_id": null,
+          "name": "incident",
+          "start_ms": 0,
+          "duration_ms": 750000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "context",
+          "parent_id": "root",
+          "name": "context.build",
+          "start_ms": 0,
+          "duration_ms": 420,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "generate",
+          "parent_id": "root",
+          "name": "hypothesis.generate",
+          "start_ms": 420,
+          "duration_ms": 1800,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "health",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2220,
+          "duration_ms": 290,
+          "status": "ok",
+          "tool": "get_service_health",
+          "evidence_ids": [
+            "INC-2043-health"
+          ]
+        },
+        {
+          "id": "comparison",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2510,
+          "duration_ms": 650,
+          "status": "ok",
+          "tool": "compare_versions",
+          "evidence_ids": [
+            "INC-2043-comparison"
+          ]
+        },
+        {
+          "id": "changes",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 3160,
+          "duration_ms": 310,
+          "status": "ok",
+          "tool": "get_recent_changes",
+          "evidence_ids": [
+            "INC-2043-change"
+          ]
+        },
+        {
+          "id": "update",
+          "parent_id": "root",
+          "name": "hypothesis.update",
+          "start_ms": 123620,
+          "duration_ms": 1300,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "select",
+          "parent_id": "root",
+          "name": "hypothesis.select",
+          "start_ms": 124920,
+          "duration_ms": 80,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "proposal",
+          "parent_id": "root",
+          "name": "remediation.propose",
+          "start_ms": 125000,
+          "duration_ms": 1100,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "policy",
+          "parent_id": "root",
+          "name": "policy.evaluate",
+          "start_ms": 126100,
+          "duration_ms": 40,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "verify",
+          "parent_id": "root",
+          "name": "verification",
+          "start_ms": 126140,
+          "duration_ms": 600000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "decision": {
+        "status": "diagnosed",
+        "hypotheses": [
+          {
+            "cause": "insufficient_cluster_cpu",
+            "confidence": 0.94
+          },
+          {
+            "cause": "application_regression",
+            "confidence": 0.04
+          }
+        ],
+        "causal_change": "node_replacement",
+        "evidence_ids": [
+          "INC-2043-health",
+          "INC-2043-comparison",
+          "INC-2043-change"
+        ],
+        "selected_action": "restore_node_capacity",
+        "policy_result": "human_approval_required"
+      },
+      "outcome": {
+        "human_accepted": true,
+        "remediation_success": true,
+        "slo_improvement": 0.12
+      },
+      "usage": {
+        "tokens": 2100,
+        "cost_usd": 0.021
+      }
+    },
+    {
+      "incident_id": "INC-2044",
+      "spans": [
+        {
+          "id": "root",
+          "parent_id": null,
+          "name": "incident",
+          "start_ms": 0,
+          "duration_ms": 750000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "context",
+          "parent_id": "root",
+          "name": "context.build",
+          "start_ms": 0,
+          "duration_ms": 420,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "generate",
+          "parent_id": "root",
+          "name": "hypothesis.generate",
+          "start_ms": 420,
+          "duration_ms": 1800,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "health",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2220,
+          "duration_ms": 290,
+          "status": "ok",
+          "tool": "get_service_health",
+          "evidence_ids": [
+            "INC-2044-health"
+          ]
+        },
+        {
+          "id": "comparison",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2510,
+          "duration_ms": 650,
+          "status": "ok",
+          "tool": "compare_versions",
+          "evidence_ids": [
+            "INC-2044-comparison"
+          ]
+        },
+        {
+          "id": "changes",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 3160,
+          "duration_ms": 310,
+          "status": "ok",
+          "tool": "get_recent_changes",
+          "evidence_ids": [
+            "INC-2044-change"
+          ]
+        },
+        {
+          "id": "update",
+          "parent_id": "root",
+          "name": "hypothesis.update",
+          "start_ms": 123620,
+          "duration_ms": 1300,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "select",
+          "parent_id": "root",
+          "name": "hypothesis.select",
+          "start_ms": 124920,
+          "duration_ms": 80,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "proposal",
+          "parent_id": "root",
+          "name": "remediation.propose",
+          "start_ms": 125000,
+          "duration_ms": 1100,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "policy",
+          "parent_id": "root",
+          "name": "policy.evaluate",
+          "start_ms": 126100,
+          "duration_ms": 40,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "verify",
+          "parent_id": "root",
+          "name": "verification",
+          "start_ms": 126140,
+          "duration_ms": 600000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "decision": {
+        "status": "diagnosed",
+        "hypotheses": [
+          {
+            "cause": "application_regression",
+            "confidence": 0.94
+          },
+          {
+            "cause": "dependency_failure",
+            "confidence": 0.04
+          }
+        ],
+        "causal_change": "release_v221",
+        "evidence_ids": [
+          "INC-2044-health",
+          "INC-2044-comparison",
+          "INC-2044-change"
+        ],
+        "selected_action": "propose_release_rollback",
+        "policy_result": "human_approval_required"
+      },
+      "outcome": {
+        "human_accepted": true,
+        "remediation_success": true,
+        "slo_improvement": 0.12
+      },
+      "usage": {
+        "tokens": 2100,
+        "cost_usd": 0.021
+      }
+    },
+    {
+      "incident_id": "INC-2045",
+      "spans": [
+        {
+          "id": "root",
+          "parent_id": null,
+          "name": "incident",
+          "start_ms": 0,
+          "duration_ms": 750000,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "context",
+          "parent_id": "root",
+          "name": "context.build",
+          "start_ms": 0,
+          "duration_ms": 420,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "generate",
+          "parent_id": "root",
+          "name": "hypothesis.generate",
+          "start_ms": 420,
+          "duration_ms": 1800,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "health",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2220,
+          "duration_ms": 290,
+          "status": "ok",
+          "tool": "get_service_health",
+          "evidence_ids": [
+            "INC-2045-health"
+          ]
+        },
+        {
+          "id": "comparison",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 2510,
+          "duration_ms": 650,
+          "status": "ok",
+          "tool": "compare_versions",
+          "evidence_ids": [
+            "INC-2045-comparison"
+          ]
+        },
+        {
+          "id": "changes",
+          "parent_id": "root",
+          "name": "tool.call",
+          "start_ms": 3160,
+          "duration_ms": 310,
+          "status": "ok",
+          "tool": "get_recent_changes",
+          "evidence_ids": [
+            "INC-2045-change"
+          ]
+        },
+        {
+          "id": "update",
+          "parent_id": "root",
+          "name": "hypothesis.update",
+          "start_ms": 123620,
+          "duration_ms": 1300,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        },
+        {
+          "id": "select",
+          "parent_id": "root",
+          "name": "hypothesis.select",
+          "start_ms": 124920,
+          "duration_ms": 80,
+          "status": "ok",
+          "tool": null,
+          "evidence_ids": []
+        }
+      ],
+      "decision": {
+        "status": "inconclusive",
+        "hypotheses": [
+          {
+            "cause": "dns_resolution_failure",
+            "confidence": 0.55
+          },
+          {
+            "cause": "application_regression",
+            "confidence": 0.3
+          }
+        ],
+        "causal_change": null,
+        "evidence_ids": [
+          "INC-2045-health"
+        ],
+        "selected_action": null,
+        "policy_result": "not_requested"
+      },
+      "outcome": {
+        "human_accepted": null,
+        "remediation_success": null,
+        "slo_improvement": null
+      },
+      "usage": {
+        "tokens": 2100,
+        "cost_usd": 0.021
+      }
+    }
+  ]
+}
