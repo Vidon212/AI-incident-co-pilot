@@ -6,7 +6,7 @@ IMAGE ?= ai-incident-copilot:local
 K8S_DIR ?= deploy/k8s
 KUBE_CONTEXT ?=
 
-.PHONY: help install test triage context remediation verify drift rag agent investigate docker-build docker-run docker-verify k8s-render k8s-deploy
+.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate docker-build docker-run docker-verify k8s-render k8s-deploy
 
 help:
 	@echo "install        Create a virtual environment and install requirements.txt"
@@ -19,6 +19,7 @@ help:
 	@echo "rag            Retrieve grounded platform knowledge for checkout-api"
 	@echo "agent          Review the synthetic pricing investigation trace"
 	@echo "investigate    Review the multi-hypothesis checkout investigation"
+	@echo "evaluate       Compare recorded agent versions against known incidents"
 	@echo "docker-build   Build IMAGE (default: ai-incident-copilot:local)"
 	@echo "docker-run     Run triage in the container"
 	@echo "docker-verify  Run verification in the container"
@@ -56,6 +57,9 @@ agent:
 
 investigate:
 	PYTHONPATH=src $(PYTHON) -m incident_copilot.investigation_cli --context examples/investigation/checkout-incident-context.json --run examples/investigation/checkout-investigation-run.json
+
+evaluate:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.evaluation_cli --dataset examples/evaluation/incidents.json --candidate examples/evaluation/candidate.json --baseline examples/evaluation/baseline.json --policy examples/evaluation/promotion-policy.json
 
 docker-build:
 	docker build -t $(IMAGE) .

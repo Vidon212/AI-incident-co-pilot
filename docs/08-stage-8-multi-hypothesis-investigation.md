@@ -129,4 +129,4 @@ The recommendation must pass the Stage 3 remediation policy and complete-plan
 comparison, external human approval, Git/IaC controller, and Stage 4 SLO verification.
 Budget exhaustion should send the top hypotheses and missing evidence to an operator.
 
-Continue with [local and Kubernetes deployment](09-local-and-kubernetes.md).
+Continue with [agent observability and evaluation](09-stage-9-agent-observability-and-evaluation.md).

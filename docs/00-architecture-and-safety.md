@@ -36,6 +36,13 @@ flowchart TD
     Investigation --> Falsification[Confidence updates and falsification]
     Falsification --> Stop[Deterministic stopping policy]
     Stop --> Review
+    Agent --> Traces[Structured decision traces]
+    Investigation --> Traces
+    Verify --> Outcomes[Collected incident outcomes]
+    Traces --> Evaluation[Offline evaluation and regression gates]
+    Outcomes --> Evaluation
+    Truth[Reviewed historical incidents and baseline runs] --> Evaluation
+    Evaluation --> Promotion[Pass / block candidate promotion review]
 ```
 
 ## Implemented capabilities
@@ -50,6 +57,7 @@ flowchart TD
 | 6 | Authority-aware retrieval with citations and contradiction detection | [RAG platform copilot](06-stage-6-rag-platform-copilot.md) |
 | 7 | Typed, bounded tool traces with authorization and intent-to-plan validation | [Tool-using agents](07-stage-7-tool-using-agents.md) |
 | 8 | Competing hypotheses, causal evidence, falsification, and stopping rules | [Multi-hypothesis investigation](08-stage-8-multi-hypothesis-investigation.md) |
+| 9 | Structured decision traces, segmented metrics, calibration, and regression gates | [Agent observability and evaluation](09-stage-9-agent-observability-and-evaluation.md) |
 
 ## Safety model
 
@@ -105,6 +113,15 @@ confidence values are untrusted model output; deterministic checks independently
 verify the narrow evidence pattern. Real collectors must authenticate every result,
 and the resulting recommendation still passes remediation policy, plan comparison,
 human approval, controller execution, and SLO verification.
+
+Stage 9 compares externally recorded traces on an identical reviewed incident cohort.
+It retains decision provenance and measures quality, safety, operational outcomes,
+speed, cost, and calibration. Unsafe recommendations block promotion even if the
+remediation policy blocked them. Scenario and critical-case regressions cannot be
+offset by aggregate gains. A passing evaluation is an offline review artifact;
+it does not deploy an agent or approve a remediation. Runtime instrumentation,
+OpenTelemetry export, model replay, incident storage, and independent ground-truth
+and outcome verification remain integration work.
 
 See the [trust and integration contract](03-stage-3-remediation.md#trust-and-integration-contract)
 for plan completeness and approval requirements. Successful mitigation is separate
