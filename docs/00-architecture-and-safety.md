@@ -43,6 +43,13 @@ flowchart TD
     Outcomes --> Evaluation
     Truth[Reviewed historical incidents and baseline runs] --> Evaluation
     Evaluation --> Promotion[Pass / block candidate promotion review]
+    Promotion --> Shadow[Shadow observations]
+    Shadow --> Canary[Recommend-only canary and engineer feedback]
+    Canary --> Prepare[Reviewed Git change preparation]
+    Prepare --> Limited[Scoped autonomous canary eligibility]
+    Grant[Independent capability preapproval] --> Limited
+    Limited --> Production[Production eligibility at the same capability scope]
+    Production -. external execution .-> Verify
 ```
 
 ## Implemented capabilities
@@ -58,6 +65,7 @@ flowchart TD
 | 7 | Typed, bounded tool traces with authorization and intent-to-plan validation | [Tool-using agents](07-stage-7-tool-using-agents.md) |
 | 8 | Competing hypotheses, causal evidence, falsification, and stopping rules | [Multi-hypothesis investigation](08-stage-8-multi-hypothesis-investigation.md) |
 | 9 | Structured decision traces, segmented metrics, calibration, and regression gates | [Agent observability and evaluation](09-stage-9-agent-observability-and-evaluation.md) |
+| 10 | Sequential rollout gates, shadow permissions, canary feedback, and bounded preapproval | [Staged rollout and bounded autonomy](10-stage-10-staged-rollout-and-bounded-autonomy.md) |
 
 ## Safety model
 
@@ -69,6 +77,9 @@ flowchart TD
 
 The application has no Kubernetes credentials, `kubectl` integration, or production
 mutation capability. All supported change proposals require human approval.
+Stage 10 can review an independently preapproved HPA capability after all existing
+remediation checks pass. Its result is eligibility for an external workflow, not a
+change to the Stage 3 policy or an execution credential.
 Verification never initiates a rollback.
 Drift review never reconciles a live resource or edits desired state. It emits a
 review artifact, and all proposed Git changes require external human approval.
@@ -122,6 +133,16 @@ offset by aggregate gains. A passing evaluation is an offline review artifact;
 it does not deploy an agent or approve a remediation. Runtime instrumentation,
 OpenTelemetry export, model replay, incident storage, and independent ground-truth
 and outcome verification remain integration work.
+
+Stage 10 recomputes offline evaluation, binds it to immutable release and replay
+fingerprints, and checks all previous rollout stages against platform-owned scope,
+incident-volume, safety, and engineer-feedback limits. Shadow output stays invisible
+to engineers; shadow and recommendation stages cannot create PRs or affect production.
+Autonomy is restricted to a named capability and an exact, independently approved
+plan and SLO contract. Runtime authorization, actual agent deployment, PR creation,
+merge, controller execution, verification-triggered revert, and immutable evidence
+storage remain external. Collectors must authenticate stage state, incident IDs,
+safety audits, feedback, and preapprovals independently of the model.
 
 See the [trust and integration contract](03-stage-3-remediation.md#trust-and-integration-contract)
 for plan completeness and approval requirements. Successful mitigation is separate

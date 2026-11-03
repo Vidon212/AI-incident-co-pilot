@@ -1,0 +1,15 @@
+{
+  "release": {
+    "agent_version": "sre-agent-v18",
+    "artifact_sha256": "15a352f049c5fc3a12543c14d8a3292b97cc0a53beea3c9de232e317364873be",
+    "candidate_sha256": "f9a9d507e8b8f680d922204bea32626404ebc35f5fc457eb2e8824e3fbb93a3e"
+  },
+  "from_stage": "offline",
+  "to_stage": "shadow",
+  "services": [
+    "payments-api"
+  ],
+  "environment": "production",
+  "traffic_percent": 100,
+  "history": []
+}

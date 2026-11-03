@@ -1,0 +1,15 @@
+{
+  "changes": [
+    {
+      "resource": "payments-api",
+      "namespace": "production",
+      "environment": "production",
+      "path": "apps/production/payments-api/values.yaml",
+      "controller": "argocd",
+      "operation": "update",
+      "field": "hpa.maxReplicas",
+      "before": 10,
+      "after": 20
+    }
+  ]
+}

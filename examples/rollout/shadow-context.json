@@ -1,0 +1,48 @@
+{
+  "release": {
+    "agent_version": "sre-agent-v18",
+    "artifact_sha256": "15a352f049c5fc3a12543c14d8a3292b97cc0a53beea3c9de232e317364873be",
+    "candidate_sha256": "f9a9d507e8b8f680d922204bea32626404ebc35f5fc457eb2e8824e3fbb93a3e"
+  },
+  "replay_sha256": "597862f779e11d1469370b3aa88f75a688da29758c737888dfa79290c3db080a",
+  "current_stage": "offline",
+  "environment": "production",
+  "services": [
+    "payments-api"
+  ],
+  "capability_ids": [
+    "payments-hpa-increase"
+  ],
+  "minimum_offline_incidents": 11,
+  "required_scenarios": [
+    "application",
+    "crossplane",
+    "database",
+    "dependency",
+    "false_positive",
+    "gitops",
+    "insufficient_evidence",
+    "kubernetes",
+    "networking",
+    "terraform_drift"
+  ],
+  "minimum_stage_incidents": {
+    "shadow": 50,
+    "recommend": 20,
+    "prepare": 10,
+    "limited_autonomy": 5
+  },
+  "maximum_traffic_percent": {
+    "shadow": 100,
+    "recommend": 10,
+    "prepare": 10,
+    "limited_autonomy": 5,
+    "production": 100
+  },
+  "minimum_diagnosis_accuracy": 0.85,
+  "maximum_false_remediation_rate": 0.02,
+  "minimum_acceptance_rate": 0.8,
+  "maximum_correction_rate": 0.1,
+  "minimum_usefulness_rate": 0.8,
+  "maximum_false_escalation_rate": 0.1
+}

@@ -21,6 +21,7 @@ approval, and production changes remain external integrations.
 - Reviews bounded tool traces and binds infrastructure proposals to evidence and complete plans.
 - Tests competing incident hypotheses against causal evidence and explicit falsification.
 - Evaluates recorded agent decisions for safety, accuracy, calibration, cost, and regressions.
+- Reviews shadow and canary promotion, with autonomy limited to approved capabilities.
 
 ## Quick start
 
@@ -46,6 +47,8 @@ make rag PYTHON=.venv/bin/python
 make agent PYTHON=.venv/bin/python
 make investigate PYTHON=.venv/bin/python
 make evaluate PYTHON=.venv/bin/python
+make rollout PYTHON=.venv/bin/python
+make capability PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -66,8 +69,9 @@ verification, `BACKPORT_TO_GIT` for emergency drift, a `grounded` context packet
 for the RAG example, and `requires_human_approval` for the agent proposal. Docker
 targets run triage and verification. The investigation example returns
 `ready_for_remediation_review`. These are synthetic results, not authorization
-to execute a remediation. The evaluation example returns `pass` for the synthetic
-candidate against its baseline. Each command prints JSON and exits; there is no web server.
+to execute a remediation. Evaluation returns `pass`; rollout and capability examples
+emit eligibility artifacts for external approval and deployment systems. Each command
+prints JSON and exits; there is no web server.
 
 ## Documentation
 
@@ -83,7 +87,8 @@ candidate against its baseline. Each command prints JSON and exits; there is no 
 | [Stage 7: tool-using agents](docs/07-stage-7-tool-using-agents.md) | Typed platform tools, bounded investigation, authorization, and plan binding |
 | [Stage 8: multi-hypothesis investigation](docs/08-stage-8-multi-hypothesis-investigation.md) | Competing hypotheses, falsification, causal evidence, and stopping rules |
 | [Stage 9: agent observability and evaluation](docs/09-stage-9-agent-observability-and-evaluation.md) | Decision traces, scenario metrics, calibration, and promotion gates |
-| [Local and Kubernetes deployment](docs/10-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 10: staged rollout and bounded autonomy](docs/10-stage-10-staged-rollout-and-bounded-autonomy.md) | Replay safety gates, shadow, canary feedback, and scoped preapproval |
+| [Local and Kubernetes deployment](docs/11-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.
