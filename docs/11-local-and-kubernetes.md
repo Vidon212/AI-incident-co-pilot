@@ -24,6 +24,8 @@ make rag PYTHON=.venv/bin/python
 make agent PYTHON=.venv/bin/python
 make investigate PYTHON=.venv/bin/python
 make evaluate PYTHON=.venv/bin/python
+make rollout PYTHON=.venv/bin/python
+make capability PYTHON=.venv/bin/python
 ```
 
 Replace `python3.13` with your installed Python 3.11+ executable. `requirements.txt`
@@ -40,6 +42,10 @@ proposal. `make investigate` validates competing checkout hypotheses and emits a
 recommendation that is ready to enter remediation review.
 `make evaluate` compares recorded candidate and baseline runs against known synthetic
 incidents and returns `pass` when all configured promotion constraints hold.
+`make rollout` reviews the synthetic release's progression to a limited autonomous
+canary. `make capability` reviews a preapproved HPA change. Both emit local review
+artifacts; a production rollout, Git PR, merge, controller apply, or revert requires
+an external integration.
 Use `PYTHON` to select an interpreter and `VENV` to change the install directory.
 
 ## Local Docker run
@@ -161,6 +167,8 @@ provenance, and approval binding in the external workflow.
 | Agent | `requires_plan` or `requires_human_approval` | `deny` or `investigate` | Invalid input |
 | Investigation | `ready_for_remediation_review` | `inconclusive` | Invalid input |
 | Evaluation | `pass` | `block` | Invalid input |
+| Rollout | `eligible_for_next_stage` | `block` | Invalid input |
+| Capability | `eligible_for_preapproved_gitops` | `requires_human_review` | Invalid input |
 
 Docker preserves the CLI exit status. Make may report its own error status for a
 failed recipe; read the JSON result as well. Kubernetes marks a nonzero exit as a

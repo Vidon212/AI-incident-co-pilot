@@ -1,0 +1,56 @@
+{
+  "action": "CONFIG_CHANGE",
+  "resource": "payments-api",
+  "namespace": "production",
+  "environment": "production",
+  "desired_state": {
+    "hpa.maxReplicas": 20
+  },
+  "confidence": 0.94,
+  "evidence": [
+    "Traffic 2.3x normal; CPU 96%; latency 3.7s; errors 8%.",
+    "HPA at maxReplicas 10; SQL CPU 38%, connections 42%."
+  ],
+  "rollback_plan": {
+    "hpa.maxReplicas": 10
+  },
+  "verification": {
+    "observation_window_minutes": 10,
+    "success_criteria": {
+      "p95_latency_ms": {
+        "op": "lt",
+        "value": 700
+      },
+      "p99_latency_ms": {
+        "op": "lt",
+        "value": 1500
+      },
+      "http_error_rate": {
+        "op": "lt",
+        "value": 0.01
+      }
+    },
+    "failure_criteria": {
+      "http_error_rate": {
+        "op": "gt",
+        "value": 0.05
+      },
+      "db_p95_latency_ms": {
+        "op": "gt",
+        "value": 300
+      },
+      "db_connections": {
+        "op": "gt",
+        "value": 180
+      },
+      "pod_cpu_percent": {
+        "op": "gt",
+        "value": 90
+      }
+    },
+    "new_critical_alert_fails": true,
+    "max_traffic_drop_fraction": 0.2,
+    "max_dependency_improvement_fraction": 0.2,
+    "baseline_guardrails": {}
+  }
+}

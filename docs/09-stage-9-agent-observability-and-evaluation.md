@@ -188,4 +188,4 @@ several services. The example covers four scenario labels; it does not claim the
 other categories have been evaluated. Record new runs for both versions on the
 expanded cohort before comparing them.
 
-Continue with [local and Kubernetes deployment](10-local-and-kubernetes.md).
+Continue with [staged rollout and bounded autonomy](10-stage-10-staged-rollout-and-bounded-autonomy.md).

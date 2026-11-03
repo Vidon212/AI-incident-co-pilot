@@ -31,10 +31,17 @@ jobs:
             --candidate examples/evaluation/candidate.json \
             --baseline examples/evaluation/baseline.json \
             --policy examples/evaluation/promotion-policy.json > /tmp/evaluation.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.rollout_cli promotion \
+            --context examples/rollout/context.json \
+            --request examples/rollout/autonomy-request.json \
+            --replay examples/rollout/replay.json > /tmp/rollout.json
           python - <<'PY'
           import json
           from pathlib import Path
           assert json.loads(Path('/tmp/triage.json').read_text())['decision'] == 'requires_human_approval'
           assert json.loads(Path('/tmp/verification.json').read_text())['outcome'] == 'SUCCESS'
           assert json.loads(Path('/tmp/evaluation.json').read_text())['decision'] == 'pass'
+          assert json.loads(Path('/tmp/rollout.json').read_text())['decision'] == 'eligible_for_next_stage'
           PY
