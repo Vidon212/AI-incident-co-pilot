@@ -1,0 +1,402 @@
+[
+  {
+    "event": {
+      "event_id": "e00",
+      "type": "incident.created",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:00Z",
+      "source": "monitoring",
+      "payload": {
+        "service": "checkout-api",
+        "environment": "production",
+        "signal": "http_5xx_rate",
+        "value": 0.17,
+        "threshold": 0.01,
+        "started_at": "2026-11-07T12:00:00Z"
+      }
+    },
+    "principal": "monitoring@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:00Z"
+  },
+  {
+    "event": {
+      "event_id": "e01",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:10Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "e00-kubernetes",
+        "evidence_ref": "e01-snapshot",
+        "evidence_sha256": "f61963676fcb7341ff393c79aac33ea4f73f7b0de3b5638042e3bbbbd7e98ccd",
+        "evidence_ids": [
+          "pods-healthy"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:10Z"
+  },
+  {
+    "event": {
+      "event_id": "e02",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:20Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "e00-telemetry",
+        "evidence_ref": "e02-snapshot",
+        "evidence_sha256": "bf7f8ca8ea60f8af9655880db9e9607189a02887c2c628b73d17bd0ee076b1b6",
+        "evidence_ids": [
+          "dependency-latency"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:20Z"
+  },
+  {
+    "event": {
+      "event_id": "e03",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:30Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "e00-changes",
+        "evidence_ref": "e03-snapshot",
+        "evidence_sha256": "1b6fa6bca8ab6415b65b0a9f90198eecb26025e32c4a06d7ac5d50eacc025940",
+        "evidence_ids": [
+          "terraform-limit-change"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:30Z"
+  },
+  {
+    "event": {
+      "event_id": "e04",
+      "type": "hypothesis.updated",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:40Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "reason-e03",
+        "attempt": 1,
+        "hypotheses": [
+          {
+            "id": "H1",
+            "cause": "application_regression",
+            "confidence": 0.3
+          },
+          {
+            "id": "H2",
+            "cause": "dependency_degradation",
+            "confidence": 0.3
+          },
+          {
+            "id": "H3",
+            "cause": "connection_exhaustion",
+            "confidence": 0.25
+          },
+          {
+            "id": "H4",
+            "cause": "kubernetes_capacity",
+            "confidence": 0.15
+          }
+        ],
+        "falsification_completed": false,
+        "evidence_ids": [
+          "pods-healthy",
+          "dependency-latency",
+          "terraform-limit-change"
+        ]
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:40Z"
+  },
+  {
+    "event": {
+      "event_id": "e05",
+      "type": "evidence.requested",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:50Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "pricing-health",
+        "tool": "get_cloudsql_health",
+        "target": "pricing-db"
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:50Z"
+  },
+  {
+    "event": {
+      "event_id": "e06",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:01:00Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "pricing-health",
+        "evidence_ref": "e06-snapshot",
+        "evidence_sha256": "f43153def3f859ef512ff4dde8a92945d1743141d8f117c7f381ad1bdd63f7f2",
+        "evidence_ids": [
+          "db-connections-299-of-300",
+          "db-wait-4000ms",
+          "db-query-120ms"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:01:00Z"
+  },
+  {
+    "event": {
+      "event_id": "e07",
+      "type": "hypothesis.updated",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:01:10Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "reason-e06",
+        "attempt": 1,
+        "hypotheses": [
+          {
+            "id": "H1",
+            "cause": "application_regression",
+            "confidence": 0.04
+          },
+          {
+            "id": "H2",
+            "cause": "dependency_degradation",
+            "confidence": 0.05
+          },
+          {
+            "id": "H3",
+            "cause": "connection_exhaustion",
+            "confidence": 0.89
+          },
+          {
+            "id": "H4",
+            "cause": "kubernetes_capacity",
+            "confidence": 0.02
+          }
+        ],
+        "falsification_completed": false,
+        "evidence_ids": [
+          "pods-healthy",
+          "dependency-latency",
+          "terraform-limit-change",
+          "db-connections-299-of-300",
+          "db-wait-4000ms",
+          "db-query-120ms"
+        ]
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:01:10Z"
+  },
+  {
+    "event": {
+      "event_id": "e08",
+      "type": "evidence.requested",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:01:20Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "pricing-changes",
+        "tool": "get_recent_changes",
+        "target": "pricing-api"
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:01:20Z"
+  },
+  {
+    "event": {
+      "event_id": "e09",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:01:30Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "pricing-changes",
+        "evidence_ref": "e09-snapshot",
+        "evidence_sha256": "70d6e655c55aecb5a939650e82e892c632d7a44ce5dcbb6baec2921a6caed6f4",
+        "evidence_ids": [
+          "connection-limit-500-to-300",
+          "causal-timeline"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:01:30Z"
+  },
+  {
+    "event": {
+      "event_id": "e10",
+      "type": "hypothesis.updated",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:01:40Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "reason-e09",
+        "attempt": 1,
+        "hypotheses": [
+          {
+            "id": "H1",
+            "cause": "application_regression",
+            "confidence": 0.02
+          },
+          {
+            "id": "H2",
+            "cause": "dependency_degradation",
+            "confidence": 0.02
+          },
+          {
+            "id": "H3",
+            "cause": "connection_exhaustion",
+            "confidence": 0.94
+          },
+          {
+            "id": "H4",
+            "cause": "kubernetes_capacity",
+            "confidence": 0.02
+          }
+        ],
+        "falsification_completed": true,
+        "evidence_ids": [
+          "pods-healthy",
+          "dependency-latency",
+          "terraform-limit-change",
+          "db-connections-299-of-300",
+          "db-wait-4000ms",
+          "db-query-120ms",
+          "connection-limit-500-to-300",
+          "causal-timeline"
+        ]
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:01:40Z"
+  },
+  {
+    "event": {
+      "event_id": "e11",
+      "type": "remediation.proposed",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:01:50Z",
+      "source": "investigator",
+      "payload": {
+        "hypothesis_id": "H3",
+        "resource": "pricing-db",
+        "intent_ref": "restore-pricing-connections-intent",
+        "intent_sha256": "82bc64dcd8745a459cbb369c7e51ab117cfe5c606f09195b91510e3f3cf86735",
+        "plan_ref": "restore-pricing-connections-plan",
+        "plan_sha256": "93087d5380d18d77e77af43c599c081f8fea01ae95cd07a01470f80d6bd54e05",
+        "verification_sha256": "37d37a332db2c9cd038d8fa415eb5b419aca775e37d856ceaa6c98e93317f437",
+        "evidence_ids": [
+          "pods-healthy",
+          "dependency-latency",
+          "terraform-limit-change",
+          "db-connections-299-of-300",
+          "db-wait-4000ms",
+          "db-query-120ms",
+          "connection-limit-500-to-300",
+          "causal-timeline"
+        ]
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:01:50Z"
+  },
+  {
+    "event": {
+      "event_id": "e12",
+      "type": "remediation.approved",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:02:00Z",
+      "source": "approval-service",
+      "payload": {
+        "proposal_event_id": "e11",
+        "approval_id": "APP-3921",
+        "intent_sha256": "82bc64dcd8745a459cbb369c7e51ab117cfe5c606f09195b91510e3f3cf86735",
+        "plan_sha256": "93087d5380d18d77e77af43c599c081f8fea01ae95cd07a01470f80d6bd54e05",
+        "verification_sha256": "37d37a332db2c9cd038d8fa415eb5b419aca775e37d856ceaa6c98e93317f437"
+      }
+    },
+    "principal": "approval-service@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:02:00Z"
+  },
+  {
+    "event": {
+      "event_id": "e13",
+      "type": "remediation.executed",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:02:10Z",
+      "source": "gitops-controller",
+      "payload": {
+        "proposal_event_id": "e11",
+        "approval_id": "APP-3921",
+        "plan_sha256": "93087d5380d18d77e77af43c599c081f8fea01ae95cd07a01470f80d6bd54e05",
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    "principal": "gitops-controller@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:02:10Z"
+  },
+  {
+    "event": {
+      "event_id": "e14",
+      "type": "remediation.verified",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:12:10Z",
+      "source": "verifier",
+      "payload": {
+        "proposal_event_id": "e11",
+        "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "verification_sha256": "37d37a332db2c9cd038d8fa415eb5b419aca775e37d856ceaa6c98e93317f437",
+        "outcome": "SUCCESS",
+        "report_ref": "INC-3921-slo-report",
+        "report_sha256": "8a85cdb1513eff7343f1d6ebe1ae41b52beeca0df3af10afb6e26732aef6ec14"
+      }
+    },
+    "principal": "verifier@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:12:10Z"
+  }
+]

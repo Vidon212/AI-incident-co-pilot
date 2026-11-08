@@ -3,7 +3,7 @@
 A Python reference project for reviewing AI-proposed incident remediation,
 verifying recovery, explaining drift, and grounding recommendations in platform
 knowledge. It also reviews multi-hypothesis investigations before a remediation
-enters policy review.
+enters policy review, and replays event-driven investigations with durable state.
 
 **The model proposes; deterministic policy decides what can proceed.** The copilot
 runs as a local CLI, Docker container, or Kubernetes Job. It reads JSON snapshots
@@ -22,6 +22,7 @@ approval, and production changes remain external integrations.
 - Tests competing incident hypotheses against causal evidence and explicit falsification.
 - Evaluates recorded agent decisions for safety, accuracy, calibration, cost, and regressions.
 - Reviews shadow and canary promotion, with autonomy limited to approved capabilities.
+- Orchestrates correlated incident events with bounded evidence collection, retries, and escalation.
 
 ## Quick start
 
@@ -49,6 +50,7 @@ make investigate PYTHON=.venv/bin/python
 make evaluate PYTHON=.venv/bin/python
 make rollout PYTHON=.venv/bin/python
 make capability PYTHON=.venv/bin/python
+make events PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -71,7 +73,9 @@ targets run triage and verification. The investigation example returns
 `ready_for_remediation_review`. These are synthetic results, not authorization
 to execute a remediation. Evaluation returns `pass`; rollout and capability examples
 emit eligibility artifacts for external approval and deployment systems. Each command
-prints JSON and exits; there is no web server.
+prints JSON and exits; there is no web server. The event example reaches `resolved`
+using synthetic approval, controller, and SLO attestations; its SQLite inbox and
+outbox survive reruns. See Stage 11 for the live adapter boundaries.
 
 ## Documentation
 
@@ -88,7 +92,8 @@ prints JSON and exits; there is no web server.
 | [Stage 8: multi-hypothesis investigation](docs/08-stage-8-multi-hypothesis-investigation.md) | Competing hypotheses, falsification, causal evidence, and stopping rules |
 | [Stage 9: agent observability and evaluation](docs/09-stage-9-agent-observability-and-evaluation.md) | Decision traces, scenario metrics, calibration, and promotion gates |
 | [Stage 10: staged rollout and bounded autonomy](docs/10-stage-10-staged-rollout-and-bounded-autonomy.md) | Replay safety gates, shadow, canary feedback, and scoped preapproval |
-| [Local and Kubernetes deployment](docs/11-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 11: event-driven investigator](docs/11-stage-11-event-driven-investigator.md) | Durable events, progressive evidence, retries, escalation, and GCP transport reference |
+| [Local and Kubernetes deployment](docs/12-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.

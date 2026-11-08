@@ -50,6 +50,12 @@ flowchart TD
     Grant[Independent capability preapproval] --> Limited
     Limited --> Production[Production eligibility at the same capability scope]
     Production -. external execution .-> Verify
+    Alert[Normalized incident event] --> Inbox[Durable inbox and incident state]
+    Inbox --> Outbox[Transactional outbox]
+    Outbox -. external collectors and investigator .-> Evidence
+    Outbox -. independent policy and approval .-> Approval
+    Verify -. correlated attestation .-> Inbox
+    Inbox --> Escalation[Bounded retries and independent notification requests]
 ```
 
 ## Implemented capabilities
@@ -66,6 +72,7 @@ flowchart TD
 | 8 | Competing hypotheses, causal evidence, falsification, and stopping rules | [Multi-hypothesis investigation](08-stage-8-multi-hypothesis-investigation.md) |
 | 9 | Structured decision traces, segmented metrics, calibration, and regression gates | [Agent observability and evaluation](09-stage-9-agent-observability-and-evaluation.md) |
 | 10 | Sequential rollout gates, shadow permissions, canary feedback, and bounded preapproval | [Staged rollout and bounded autonomy](10-stage-10-staged-rollout-and-bounded-autonomy.md) |
+| 11 | Durable correlated events, progressive evidence, bounded retries, and escalation | [Event-driven investigator](11-stage-11-event-driven-investigator.md) |
 
 ## Safety model
 
@@ -148,3 +155,13 @@ See the [trust and integration contract](03-stage-3-remediation.md#trust-and-int
 for plan completeness and approval requirements. Successful mitigation is separate
 from root-cause resolution and from meeting the service's long-term SLO; see the
 [memory example](04-stage-4-verification.md).
+
+Stage 11 adds a local SQLite inbox/state/outbox transaction. It queues collector,
+investigator, policy, execution, verification, evaluation, and notification work;
+it does not perform those integrations. Fixture principal strings are test inputs,
+not authenticated identities. Live adapters must bind provenance to isolated
+producer channels or signed events and supply a trusted clock. Model confidence
+and a falsification flag do not replace Stage 8 causal review or Stage 3 plan
+policy. Only independent approval, controller, and verifier identities can attest
+to the corresponding transitions. The GCP reference provisions transport only;
+existing monitoring and paging must operate independently of every AI component.

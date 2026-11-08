@@ -5,8 +5,9 @@ VENV_PYTHON := $(VENV)/bin/python
 IMAGE ?= ai-incident-copilot:local
 K8S_DIR ?= deploy/k8s
 KUBE_CONTEXT ?=
+EVENTS_STATE ?= /tmp/incident-copilot-session11.sqlite3
 
-.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability docker-build docker-run docker-verify k8s-render k8s-deploy
+.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events docker-build docker-run docker-verify k8s-render k8s-deploy
 
 help:
 	@echo "install        Create a virtual environment and install requirements.txt"
@@ -22,6 +23,7 @@ help:
 	@echo "evaluate       Compare recorded agent versions against known incidents"
 	@echo "rollout        Review promotion to a bounded autonomous canary"
 	@echo "capability     Review the preapproved payments HPA capability"
+	@echo "events         Replay the event-driven checkout investigation into SQLite"
 	@echo "docker-build   Build IMAGE (default: ai-incident-copilot:local)"
 	@echo "docker-run     Run triage in the container"
 	@echo "docker-verify  Run verification in the container"
@@ -68,6 +70,9 @@ rollout:
 
 capability:
 	PYTHONPATH=src $(PYTHON) -m incident_copilot.rollout_cli capability --platform examples/rollout/capability-platform.json --intent examples/rollout/hpa-intent.json --plan examples/rollout/hpa-plan.json --replay examples/rollout/replay.json
+
+events:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.events_cli --context examples/events/context.json --deliveries examples/events/checkout-deliveries.json --state "$(EVENTS_STATE)"
 
 docker-build:
 	docker build -t $(IMAGE) .
