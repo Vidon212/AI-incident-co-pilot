@@ -1,0 +1,31 @@
+{
+  "agent_version": "sre-agent-v18",
+  "environment": "production",
+  "services": [
+    "checkout-api",
+    "pricing-api"
+  ],
+  "resources": {
+    "pricing-db": {
+      "service": "pricing-api",
+      "controller": "terraform",
+      "git_path": "infra/production/pricing-db.tf"
+    }
+  },
+  "principals": {
+    "monitoring": "monitoring@example.iam.gserviceaccount.com",
+    "investigator": "investigator@example.iam.gserviceaccount.com",
+    "collectors": "collectors@example.iam.gserviceaccount.com",
+    "approval-service": "approval-service@example.iam.gserviceaccount.com",
+    "gitops-controller": "gitops-controller@example.iam.gserviceaccount.com",
+    "verifier": "verifier@example.iam.gserviceaccount.com"
+  },
+  "limits": {
+    "max_tool_calls": 12,
+    "max_investigation_seconds": 300,
+    "max_delivery_attempts": 3,
+    "max_reasoning_attempts": 3,
+    "retry_base_seconds": 5,
+    "max_event_bytes": 16384
+  }
+}

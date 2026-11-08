@@ -1,0 +1,140 @@
+[
+  {
+    "event": {
+      "event_id": "e00",
+      "type": "incident.created",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:00Z",
+      "source": "monitoring",
+      "payload": {
+        "service": "checkout-api",
+        "environment": "production",
+        "signal": "http_5xx_rate",
+        "value": 0.17,
+        "threshold": 0.01,
+        "started_at": "2026-11-07T12:00:00Z"
+      }
+    },
+    "principal": "monitoring@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:00Z"
+  },
+  {
+    "event": {
+      "event_id": "e01",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:10Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "e00-kubernetes",
+        "evidence_ref": "e01-snapshot",
+        "evidence_sha256": "f61963676fcb7341ff393c79aac33ea4f73f7b0de3b5638042e3bbbbd7e98ccd",
+        "evidence_ids": [
+          "pods-healthy"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:10Z"
+  },
+  {
+    "event": {
+      "event_id": "e02",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:20Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "e00-telemetry",
+        "evidence_ref": "e02-snapshot",
+        "evidence_sha256": "bf7f8ca8ea60f8af9655880db9e9607189a02887c2c628b73d17bd0ee076b1b6",
+        "evidence_ids": [
+          "dependency-latency"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:20Z"
+  },
+  {
+    "event": {
+      "event_id": "e03",
+      "type": "evidence.collected",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:30Z",
+      "source": "collectors",
+      "payload": {
+        "request_id": "e00-changes",
+        "evidence_ref": "e03-snapshot",
+        "evidence_sha256": "1b6fa6bca8ab6415b65b0a9f90198eecb26025e32c4a06d7ac5d50eacc025940",
+        "evidence_ids": [
+          "terraform-limit-change"
+        ]
+      }
+    },
+    "principal": "collectors@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:30Z"
+  },
+  {
+    "event": {
+      "event_id": "timeout1",
+      "type": "investigation.failed",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:31Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "reason-e03",
+        "attempt": 1,
+        "reason": "timeout"
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:31Z"
+  },
+  {
+    "event": {
+      "event_id": "timeout2",
+      "type": "investigation.failed",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:36Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "reason-e03",
+        "attempt": 2,
+        "reason": "timeout"
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:36Z"
+  },
+  {
+    "event": {
+      "event_id": "timeout3",
+      "type": "investigation.failed",
+      "incident_id": "INC-3921",
+      "trace_id": "5f6a3d782c4b4d29a640f238739ca043",
+      "agent_version": "sre-agent-v18",
+      "timestamp": "2026-11-07T12:00:46Z",
+      "source": "investigator",
+      "payload": {
+        "request_id": "reason-e03",
+        "attempt": 3,
+        "reason": "timeout"
+      }
+    },
+    "principal": "investigator@example.iam.gserviceaccount.com",
+    "received_at": "2026-11-07T12:00:46Z"
+  }
+]
