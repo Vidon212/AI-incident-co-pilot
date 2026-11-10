@@ -3,7 +3,8 @@
 A Python reference project for reviewing AI-proposed incident remediation,
 verifying recovery, explaining drift, and grounding recommendations in platform
 knowledge. It also reviews multi-hypothesis investigations before a remediation
-enters policy review, and replays event-driven investigations with durable state.
+enters policy review, replays event-driven investigations with durable state, and
+screens GitOps changes against operational evidence.
 
 **The model proposes; deterministic policy decides what can proceed.** The copilot
 runs as a local CLI, Docker container, or Kubernetes Job. It reads JSON snapshots
@@ -23,6 +24,7 @@ approval, and production changes remain external integrations.
 - Evaluates recorded agent decisions for safety, accuracy, calibration, cost, and regressions.
 - Reviews shadow and canary promotion, with autonomy limited to approved capabilities.
 - Orchestrates correlated incident events with bounded evidence collection, retries, and escalation.
+- Flags GitOps capacity and access risks using fresh telemetry, topology, and cited model assessments.
 
 ## Quick start
 
@@ -51,6 +53,7 @@ make evaluate PYTHON=.venv/bin/python
 make rollout PYTHON=.venv/bin/python
 make capability PYTHON=.venv/bin/python
 make events PYTHON=.venv/bin/python
+make risk PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -75,7 +78,8 @@ to execute a remediation. Evaluation returns `pass`; rollout and capability exam
 emit eligibility artifacts for external approval and deployment systems. Each command
 prints JSON and exits; there is no web server. The event example reaches `resolved`
 using synthetic approval, controller, and SLO attestations; its SQLite inbox and
-outbox survive reruns. See Stage 11 for the live adapter boundaries.
+outbox survive reruns. The risk example returns `requires_human_review`; Stage 12
+also includes a blocked change set. See the stage guides for live adapter boundaries.
 
 ## Documentation
 
@@ -93,7 +97,8 @@ outbox survive reruns. See Stage 11 for the live adapter boundaries.
 | [Stage 9: agent observability and evaluation](docs/09-stage-9-agent-observability-and-evaluation.md) | Decision traces, scenario metrics, calibration, and promotion gates |
 | [Stage 10: staged rollout and bounded autonomy](docs/10-stage-10-staged-rollout-and-bounded-autonomy.md) | Replay safety gates, shadow, canary feedback, and scoped preapproval |
 | [Stage 11: event-driven investigator](docs/11-stage-11-event-driven-investigator.md) | Durable events, progressive evidence, retries, escalation, and GCP transport reference |
-| [Local and Kubernetes deployment](docs/12-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 12: GitOps PR risk reviewer](docs/12-stage-12-gitops-pr-risk-reviewer.md) | Operational invariants, blast radius, evidence-bound assessments, and merge review |
+| [Local and Kubernetes deployment](docs/13-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.

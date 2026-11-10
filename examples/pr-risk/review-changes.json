@@ -1,0 +1,86 @@
+{
+  "repository": "platform-example/production",
+  "base_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "head_revision": "cccccccccccccccccccccccccccccccccccccccc",
+  "environment": "production",
+  "resources": [
+    {
+      "resource_id": "payments-hpa",
+      "kind": "HorizontalPodAutoscaler",
+      "service": "payments-api",
+      "path": "apps/payments/hpa.yaml",
+      "before": {
+        "min_replicas": 8,
+        "max_replicas": 30,
+        "cpu_target_percent": 70
+      },
+      "after": {
+        "min_replicas": 8,
+        "max_replicas": 40,
+        "cpu_target_percent": 70
+      }
+    },
+    {
+      "resource_id": "checkout-db",
+      "kind": "CloudSQLInstance",
+      "service": "checkout-api",
+      "path": "infra/checkout/database.tf",
+      "before": {
+        "tier": "db-custom-8-32768",
+        "cpu_cores": 8,
+        "memory_gib": 32
+      },
+      "after": {
+        "tier": "db-custom-16-65536",
+        "cpu_cores": 16,
+        "memory_gib": 64
+      }
+    },
+    {
+      "resource_id": "pricing-storage",
+      "kind": "PostgreSQLInstance",
+      "service": "pricing-api",
+      "path": "claims/pricing/database.yaml",
+      "before": {
+        "storage_gib": 500
+      },
+      "after": {
+        "storage_gib": 600
+      }
+    },
+    {
+      "resource_id": "payments-ingress",
+      "kind": "NetworkPolicy",
+      "service": "payments-api",
+      "path": "apps/payments/network-policy.yaml",
+      "before": {
+        "ingress_namespace_selector": {
+          "team": "checkout"
+        }
+      },
+      "after": {
+        "ingress_namespace_selector": {
+          "team": "checkout"
+        }
+      }
+    },
+    {
+      "resource_id": "payments-deployment",
+      "kind": "Deployment",
+      "service": "payments-api",
+      "path": "apps/payments/deployment.yaml",
+      "before": {
+        "replicas": 20,
+        "cpu_request_cores": 2,
+        "max_surge": 1,
+        "max_unavailable": 0
+      },
+      "after": {
+        "replicas": 20,
+        "cpu_request_cores": 2.5,
+        "max_surge": 1,
+        "max_unavailable": 0
+      }
+    }
+  ]
+}

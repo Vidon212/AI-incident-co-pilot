@@ -1,0 +1,24 @@
+{
+  "change_set_sha256": "554fe3e9c311c4479625323ed65dc795248d9ae405080fd738e46be7026cbf67",
+  "context_sha256": "c03e9dfebcf9292373515e9361a037c28a682a5ee0cf0359e11d59be3f8839dc",
+  "findings": [
+    {
+      "resource_id": "checkout-db",
+      "severity": "critical",
+      "evidence_ids": [
+        "checkout-db-snapshot"
+      ],
+      "explanation": "The new 16 GiB tier is below 21 GiB memory p95. Three services depend on this database, with a 99.95% SLO target and prior incident INC-1928.",
+      "recommendation": "Retain memory headroom and request the database owner capacity review."
+    },
+    {
+      "resource_id": "payments-ingress",
+      "severity": "high",
+      "evidence_ids": [
+        "payments-ingress-snapshot"
+      ],
+      "explanation": "The peer selector changes from three checkout namespaces to 74 production namespaces, potentially adding 312 workloads as ingress sources.",
+      "recommendation": "Request security review and inspect effective ingress and egress policies."
+    }
+  ]
+}

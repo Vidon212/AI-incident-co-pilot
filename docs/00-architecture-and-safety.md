@@ -56,6 +56,11 @@ flowchart TD
     Outbox -. independent policy and approval .-> Approval
     Verify -. correlated attestation .-> Inbox
     Inbox --> Escalation[Bounded retries and independent notification requests]
+    Candidate[Normalized GitOps candidate snapshots] --> PRDiff[Compute exact supported field changes]
+    PRDiff --> Risk[Operational invariants and topology deltas]
+    Facts[Fresh telemetry and trusted ownership catalog] --> Risk
+    Risk --> PRReview[Block / investigate / human review]
+    ModelRisk[Optional bound model assessment] --> PRReview
 ```
 
 ## Implemented capabilities
@@ -73,6 +78,7 @@ flowchart TD
 | 9 | Structured decision traces, segmented metrics, calibration, and regression gates | [Agent observability and evaluation](09-stage-9-agent-observability-and-evaluation.md) |
 | 10 | Sequential rollout gates, shadow permissions, canary feedback, and bounded preapproval | [Staged rollout and bounded autonomy](10-stage-10-staged-rollout-and-bounded-autonomy.md) |
 | 11 | Durable correlated events, progressive evidence, bounded retries, and escalation | [Event-driven investigator](11-stage-11-event-driven-investigator.md) |
+| 12 | Operational GitOps risk checks, selector blast radius, and evidence-bound model commentary | [GitOps PR risk reviewer](12-stage-12-gitops-pr-risk-reviewer.md) |
 
 ## Safety model
 
@@ -165,3 +171,12 @@ and a falsification flag do not replace Stage 8 causal review or Stage 3 plan
 policy. Only independent approval, controller, and verifier identities can attest
 to the corresponding transitions. The GCP reference provisions transport only;
 existing monitoring and paging must operate independently of every AI component.
+
+Stage 12 reviews normalized resource updates against fresh operational evidence
+and an authoritative controller catalog. It computes capacity and selector changes,
+enforces known invariants, and preserves cited model commentary separately from
+deterministic findings. Model prose cannot lower a risk finding, satisfy missing
+checks, or authorize merge. Candidate, context, and assessment fingerprints bind
+the report to its inputs. Rendering Helm/Kustomize, producing complete Terraform
+plans and projections, authenticating evidence/check results, invoking a model,
+posting GitHub reviews, branch protection, merge, and apply remain external.

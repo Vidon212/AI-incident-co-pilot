@@ -42,6 +42,20 @@ jobs:
             incident_copilot.events_cli --context examples/events/context.json \
             --deliveries examples/events/checkout-deliveries.json \
             --state :memory: > /tmp/events.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.pr_risk_cli --changes examples/pr-risk/review-changes.json \
+            --context examples/pr-risk/review-context.json > /tmp/risk-review.json
+          if docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.pr_risk_cli --changes examples/pr-risk/unsafe-changes.json \
+            --context examples/pr-risk/unsafe-context.json \
+            --assessment examples/pr-risk/unsafe-assessment.json > /tmp/risk-blocked.json; then
+            echo "Expected the unsafe change set to be blocked" >&2
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
           python - <<'PY'
           import json
           from pathlib import Path
@@ -50,4 +64,6 @@ jobs:
           assert json.loads(Path('/tmp/evaluation.json').read_text())['decision'] == 'pass'
           assert json.loads(Path('/tmp/rollout.json').read_text())['decision'] == 'eligible_for_next_stage'
           assert json.loads(Path('/tmp/events.json').read_text())['incidents'][0]['phase'] == 'resolved'
+          assert json.loads(Path('/tmp/risk-review.json').read_text())['decision'] == 'requires_human_review'
+          assert json.loads(Path('/tmp/risk-blocked.json').read_text())['decision'] == 'block'
           PY
