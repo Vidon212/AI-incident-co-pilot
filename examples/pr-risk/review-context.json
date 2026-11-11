@@ -1,0 +1,715 @@
+{
+  "repository": "platform-example/production",
+  "environment": "production",
+  "change_set_sha256": "8ff4e7bd2341eec387d72f5ef7b5fc013a2b2ae6c25b3b86dac005ebe5a93674",
+  "evaluated_at": "2026-11-09T12:00:00Z",
+  "max_evidence_age_seconds": 300,
+  "storage_safety_margin_gib": 30,
+  "checks": {
+    "schema": "pass",
+    "plan": "pass",
+    "organization_policy": "pass"
+  },
+  "resources": {
+    "payments-hpa": {
+      "kind": "HorizontalPodAutoscaler",
+      "service": "payments-api",
+      "path": "apps/payments/hpa.yaml",
+      "controller": "argocd",
+      "dependent_services": [
+        "payments-api"
+      ],
+      "slo_target": 0.999,
+      "prior_incidents": [],
+      "evidence": {
+        "id": "payments-hpa-snapshot",
+        "observed_at": "2026-11-09T11:59:00Z",
+        "metrics": {
+          "window_days": 30,
+          "peak_replicas": 22,
+          "days_above_proposed_max": 0,
+          "cpu_signal": true
+        }
+      }
+    },
+    "checkout-db": {
+      "kind": "CloudSQLInstance",
+      "service": "checkout-api",
+      "path": "infra/checkout/database.tf",
+      "controller": "terraform",
+      "dependent_services": [
+        "checkout-api",
+        "pricing-api",
+        "orders-api"
+      ],
+      "slo_target": 0.9995,
+      "prior_incidents": [
+        "INC-1928"
+      ],
+      "evidence": {
+        "id": "checkout-db-snapshot",
+        "observed_at": "2026-11-09T11:59:00Z",
+        "metrics": {
+          "memory_p95_gib": 21,
+          "cpu_p95_fraction": 0.62,
+          "cpu_peak_fraction": 0.79
+        }
+      }
+    },
+    "pricing-storage": {
+      "kind": "PostgreSQLInstance",
+      "service": "pricing-api",
+      "path": "claims/pricing/database.yaml",
+      "controller": "crossplane",
+      "dependent_services": [
+        "pricing-api"
+      ],
+      "slo_target": 0.999,
+      "prior_incidents": [],
+      "evidence": {
+        "id": "pricing-storage-snapshot",
+        "observed_at": "2026-11-09T11:59:00Z",
+        "metrics": {
+          "used_gib": 437,
+          "growth_30d_gib": 28
+        }
+      }
+    },
+    "payments-ingress": {
+      "kind": "NetworkPolicy",
+      "service": "payments-api",
+      "path": "apps/payments/network-policy.yaml",
+      "controller": "argocd",
+      "dependent_services": [
+        "payments-api"
+      ],
+      "slo_target": 0.999,
+      "prior_incidents": [],
+      "evidence": {
+        "id": "payments-ingress-snapshot",
+        "observed_at": "2026-11-09T11:59:00Z",
+        "metrics": {
+          "inventory_complete": true,
+          "namespaces": [
+            {
+              "name": "namespace-00",
+              "labels": {
+                "environment": "production",
+                "team": "checkout"
+              },
+              "workloads": 2
+            },
+            {
+              "name": "namespace-01",
+              "labels": {
+                "environment": "production",
+                "team": "checkout"
+              },
+              "workloads": 2
+            },
+            {
+              "name": "namespace-02",
+              "labels": {
+                "environment": "production",
+                "team": "checkout"
+              },
+              "workloads": 2
+            },
+            {
+              "name": "namespace-03",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-04",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-05",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-06",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-07",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-08",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-09",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-10",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-11",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-12",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-13",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-14",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-15",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-16",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-17",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-18",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-19",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-20",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-21",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-22",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-23",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-24",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-25",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-26",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-27",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-28",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-29",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-30",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-31",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-32",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-33",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-34",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-35",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-36",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-37",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-38",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-39",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-40",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-41",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-42",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-43",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-44",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-45",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-46",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-47",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-48",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-49",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-50",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-51",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-52",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-53",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-54",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-55",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-56",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-57",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-58",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-59",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-60",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-61",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-62",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-63",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-64",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-65",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-66",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-67",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-68",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-69",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-70",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-71",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 4
+            },
+            {
+              "name": "namespace-72",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 18
+            },
+            {
+              "name": "namespace-73",
+              "labels": {
+                "environment": "production",
+                "team": "other"
+              },
+              "workloads": 18
+            }
+          ]
+        }
+      }
+    },
+    "payments-deployment": {
+      "kind": "Deployment",
+      "service": "payments-api",
+      "path": "apps/payments/deployment.yaml",
+      "controller": "argocd",
+      "dependent_services": [
+        "payments-api"
+      ],
+      "slo_target": 0.999,
+      "prior_incidents": [],
+      "evidence": {
+        "id": "payments-deployment-snapshot",
+        "observed_at": "2026-11-09T11:59:00Z",
+        "metrics": {
+          "free_cpu_cores": 47,
+          "largest_free_node_cpu_cores": 3,
+          "node_autoscaler_at_max": true,
+          "pdb_min_available": 18,
+          "current_replicas": 20,
+          "ready_replicas": 20,
+          "current_pod_cpu_request_cores": 2
+        }
+      }
+    }
+  }
+}

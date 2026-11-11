@@ -175,5 +175,5 @@ uses five transport attempts with service-agent forwarding permissions. See the
 [dead-letter documentation](https://docs.cloud.google.com/pubsub/docs/dead-letter-topics).
 Do not claim exactly-once side effects from local deduplication.
 
-Continue with [local and Kubernetes deployment](12-local-and-kubernetes.md).
-Session 12's GitOps PR risk reviewer is separate future work.
+Continue with [Stage 12: GitOps PR risk review](12-stage-12-gitops-pr-risk-reviewer.md)
+or [local and Kubernetes deployment](13-local-and-kubernetes.md).
