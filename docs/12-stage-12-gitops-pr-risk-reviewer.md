@@ -178,4 +178,5 @@ blocked examples without networking. LLM invocation, live collection, rendered
 manifest/provider adapters, GitHub review posting, merge, and apply remain live
 integration work. The existing response loop and Stage 11 orchestrator are unchanged.
 
-Continue with [local and Kubernetes deployment](13-local-and-kubernetes.md).
+Continue with [Stage 13: reliability knowledge graph](13-stage-13-reliability-knowledge-graph.md)
+or [local and Kubernetes deployment](14-local-and-kubernetes.md).

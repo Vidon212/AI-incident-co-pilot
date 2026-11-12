@@ -1,0 +1,430 @@
+{
+  "environment": "production",
+  "nodes": [
+    {
+      "id": "platform-repo",
+      "kind": "Repository",
+      "name": "platform-repo",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "checkout-api",
+      "kind": "Service",
+      "name": "checkout-api",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "inventory-api",
+      "kind": "Service",
+      "name": "inventory-api",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "pricing-api",
+      "kind": "Service",
+      "name": "pricing-api",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "identity-api",
+      "kind": "Service",
+      "name": "identity-api",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "legacy-debug-service",
+      "kind": "Service",
+      "name": "legacy-debug-service",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "inventory-db",
+      "kind": "Database",
+      "name": "inventory-db",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "inventory-sql",
+      "kind": "CloudResource",
+      "name": "inventory-sql",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "inventory-tf",
+      "kind": "TerraformResource",
+      "name": "inventory-tf",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "checkout-workload",
+      "kind": "Workload",
+      "name": "checkout-workload",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "inventory-workload",
+      "kind": "Workload",
+      "name": "inventory-workload",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "production-gke",
+      "kind": "Cluster",
+      "name": "production-gke",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "checkout-argocd",
+      "kind": "ArgoCDApplication",
+      "name": "checkout-argocd",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "commerce-team",
+      "kind": "Team",
+      "name": "commerce-team",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "inventory-team",
+      "kind": "Team",
+      "name": "inventory-team",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "checkout-availability",
+      "kind": "SLO",
+      "name": "checkout-availability",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "INC-892",
+      "kind": "Incident",
+      "name": "INC-892",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-01",
+      "from": "platform-repo",
+      "to": "checkout-api",
+      "relationship": "DEPLOYS",
+      "source": "argocd",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-02",
+      "from": "checkout-api",
+      "to": "checkout-workload",
+      "relationship": "RUNS_AS",
+      "source": "kubernetes",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-03",
+      "from": "inventory-api",
+      "to": "inventory-workload",
+      "relationship": "RUNS_AS",
+      "source": "kubernetes",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-04",
+      "from": "checkout-workload",
+      "to": "production-gke",
+      "relationship": "RUNS_ON",
+      "source": "kubernetes",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-05",
+      "from": "inventory-workload",
+      "to": "production-gke",
+      "relationship": "RUNS_ON",
+      "source": "kubernetes",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-06",
+      "from": "checkout-workload",
+      "to": "checkout-argocd",
+      "relationship": "MANAGED_BY",
+      "source": "argocd",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-07",
+      "from": "checkout-api",
+      "to": "inventory-api",
+      "relationship": "CALLS",
+      "source": "git",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-08",
+      "from": "checkout-api",
+      "to": "inventory-api",
+      "relationship": "CALLS",
+      "source": "opentelemetry",
+      "basis": "observed",
+      "confidence": 0.99,
+      "observations": 1842031,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-09",
+      "from": "checkout-api",
+      "to": "pricing-api",
+      "relationship": "CALLS",
+      "source": "opentelemetry",
+      "basis": "observed",
+      "confidence": 0.99,
+      "observations": 9991,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-10",
+      "from": "checkout-api",
+      "to": "identity-api",
+      "relationship": "CALLS",
+      "source": "opentelemetry",
+      "basis": "observed",
+      "confidence": 0.99,
+      "observations": 9911,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-11",
+      "from": "checkout-api",
+      "to": "legacy-debug-service",
+      "relationship": "CALLS",
+      "source": "opentelemetry",
+      "basis": "observed",
+      "confidence": 0.21,
+      "observations": 2,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-12",
+      "from": "inventory-api",
+      "to": "inventory-db",
+      "relationship": "USES",
+      "source": "service-catalog",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-13",
+      "from": "inventory-db",
+      "to": "inventory-sql",
+      "relationship": "RUNS_ON",
+      "source": "gcp",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-14",
+      "from": "inventory-sql",
+      "to": "inventory-tf",
+      "relationship": "MANAGED_BY",
+      "source": "terraform-state",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-15",
+      "from": "checkout-api",
+      "to": "commerce-team",
+      "relationship": "OWNED_BY",
+      "source": "service-catalog",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-16",
+      "from": "inventory-api",
+      "to": "inventory-team",
+      "relationship": "OWNED_BY",
+      "source": "service-catalog",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-17",
+      "from": "checkout-api",
+      "to": "checkout-availability",
+      "relationship": "HAS_SLO",
+      "source": "slo-config",
+      "basis": "configured",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2026-11-11T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    },
+    {
+      "id": "edge-18",
+      "from": "INC-892",
+      "to": "inventory-db",
+      "relationship": "AFFECTED",
+      "source": "incident-system",
+      "basis": "historical",
+      "confidence": 1.0,
+      "observations": 1,
+      "last_seen": "2025-05-01T12:00:00Z",
+      "required_scopes": [
+        "internal",
+        "production"
+      ]
+    }
+  ]
+}

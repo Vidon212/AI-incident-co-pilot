@@ -7,7 +7,7 @@ K8S_DIR ?= deploy/k8s
 KUBE_CONTEXT ?=
 EVENTS_STATE ?= /tmp/incident-copilot-session11.sqlite3
 
-.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk docker-build docker-run docker-verify k8s-render k8s-deploy
+.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk graph graph-rag docker-build docker-run docker-verify k8s-render k8s-deploy
 
 help:
 	@echo "install        Create a virtual environment and install requirements.txt"
@@ -25,6 +25,8 @@ help:
 	@echo "capability     Review the preapproved payments HPA capability"
 	@echo "events         Replay the event-driven checkout investigation into SQLite"
 	@echo "risk           Review the synthetic GitOps change set against operational evidence"
+	@echo "graph          Trace database infrastructure impact through the reliability graph"
+	@echo "graph-rag      Retrieve policy-filtered knowledge for graph-selected services"
 	@echo "docker-build   Build IMAGE (default: ai-incident-copilot:local)"
 	@echo "docker-run     Run triage in the container"
 	@echo "docker-verify  Run verification in the container"
@@ -77,6 +79,12 @@ events:
 
 risk:
 	PYTHONPATH=src $(PYTHON) -m incident_copilot.pr_risk_cli --changes examples/pr-risk/review-changes.json --context examples/pr-risk/review-context.json
+
+graph:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.graph_cli --graph examples/graph/platform.json --query examples/graph/database-impact.json
+
+graph-rag:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.graph_cli --graph examples/graph/platform.json --query examples/graph/database-impact.json --documents examples/graph/documents.json --question "What depends on this database?"
 
 docker-build:
 	docker build -t $(IMAGE) .

@@ -27,6 +27,8 @@ make evaluate PYTHON=.venv/bin/python
 make rollout PYTHON=.venv/bin/python
 make capability PYTHON=.venv/bin/python
 make risk PYTHON=.venv/bin/python
+make graph PYTHON=.venv/bin/python
+make graph-rag PYTHON=.venv/bin/python
 ```
 
 Replace `python3.13` with your installed Python 3.11+ executable. `requirements.txt`
