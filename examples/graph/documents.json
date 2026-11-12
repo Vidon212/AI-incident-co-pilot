@@ -1,0 +1,52 @@
+[
+  {
+    "id": "inventory-api-runbook",
+    "title": "Inventory connection contention runbook",
+    "type": "runbook",
+    "service": "inventory-api",
+    "environment": "production",
+    "team": "commerce",
+    "version": "1.0",
+    "status": "current",
+    "last_reviewed": "2026-11-10",
+    "required_scopes": [
+      "internal",
+      "production"
+    ],
+    "similarity": 0.95,
+    "production_adoption": 1.0,
+    "content": "Check pool saturation and connection wait before changing database capacity.",
+    "facts": [
+      {
+        "topic": "database.connection_wait",
+        "value": "Check pool saturation and connection wait before changing database capacity.",
+        "kind": "operational"
+      }
+    ]
+  },
+  {
+    "id": "checkout-api-runbook",
+    "title": "Checkout dependency policy",
+    "type": "runbook",
+    "service": "checkout-api",
+    "environment": "production",
+    "team": "commerce",
+    "version": "1.0",
+    "status": "current",
+    "last_reviewed": "2026-11-10",
+    "required_scopes": [
+      "internal",
+      "production"
+    ],
+    "similarity": 0.95,
+    "production_adoption": 1.0,
+    "content": "Inventory latency can consume the checkout request deadline.",
+    "facts": [
+      {
+        "topic": "dependency.inventory",
+        "value": "Inventory latency can consume the checkout request deadline.",
+        "kind": "operational"
+      }
+    ]
+  }
+]

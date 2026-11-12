@@ -176,4 +176,4 @@ uses five transport attempts with service-agent forwarding permissions. See the
 Do not claim exactly-once side effects from local deduplication.
 
 Continue with [Stage 12: GitOps PR risk review](12-stage-12-gitops-pr-risk-reviewer.md)
-or [local and Kubernetes deployment](13-local-and-kubernetes.md).
+or [local and Kubernetes deployment](14-local-and-kubernetes.md).

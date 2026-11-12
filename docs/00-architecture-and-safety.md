@@ -61,6 +61,10 @@ flowchart TD
     Facts[Fresh telemetry and trusted ownership catalog] --> Risk
     Risk --> PRReview[Block / investigate / human review]
     ModelRisk[Optional bound model assessment] --> PRReview
+    Topology[Normalized platform topology assertions] --> Graph[Scoped reliability graph traversal]
+    Graph --> Neighborhood[Bounded paths and provenance]
+    Neighborhood --> Retrieval
+    Neighborhood -. external integration .-> Risk
 ```
 
 ## Implemented capabilities
@@ -79,6 +83,7 @@ flowchart TD
 | 10 | Sequential rollout gates, shadow permissions, canary feedback, and bounded preapproval | [Staged rollout and bounded autonomy](10-stage-10-staged-rollout-and-bounded-autonomy.md) |
 | 11 | Durable correlated events, progressive evidence, bounded retries, and escalation | [Event-driven investigator](11-stage-11-event-driven-investigator.md) |
 | 12 | Operational GitOps risk checks, selector blast radius, and evidence-bound model commentary | [GitOps PR risk reviewer](12-stage-12-gitops-pr-risk-reviewer.md) |
+| 13 | Typed topology, evidence filtering, bounded traversal, and graph-guided retrieval | [Reliability knowledge graph](13-stage-13-reliability-knowledge-graph.md) |
 
 ## Safety model
 
@@ -180,3 +185,12 @@ checks, or authorize merge. Candidate, context, and assessment fingerprints bind
 the report to its inputs. Rendering Helm/Kustomize, producing complete Terraform
 plans and projections, authenticating evidence/check results, invoking a model,
 posting GitHub reviews, branch protection, merge, and apply remain external.
+
+Stage 13 queries a normalized topology snapshot with typed relationships, separate
+configured/observed provenance, confidence, observation count, and freshness. Node
+and edge scopes constrain traversal. Historical incident links are context, not
+causal proof or traversal bridges. Bounded results report truncation; absence of a
+path cannot establish safety. Graph-selected services can feed the existing Stage 6
+retriever without bypassing its authority or access policy. Live ingestion, source
+authentication, telemetry correlation, graph persistence, model reasoning, and
+feeding graph-derived context into Stage 12 remain external integrations.

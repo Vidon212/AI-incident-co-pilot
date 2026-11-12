@@ -46,6 +46,12 @@ jobs:
             --security-opt no-new-privileges ai-incident-copilot:local \
             incident_copilot.pr_risk_cli --changes examples/pr-risk/review-changes.json \
             --context examples/pr-risk/review-context.json > /tmp/risk-review.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.graph_cli --graph examples/graph/platform.json \
+            --query examples/graph/database-impact.json \
+            --documents examples/graph/documents.json \
+            --question 'What depends on this database?' > /tmp/graph.json
           if docker run --rm --read-only --network none --cap-drop ALL \
             --security-opt no-new-privileges ai-incident-copilot:local \
             incident_copilot.pr_risk_cli --changes examples/pr-risk/unsafe-changes.json \
@@ -66,4 +72,9 @@ jobs:
           assert json.loads(Path('/tmp/events.json').read_text())['incidents'][0]['phase'] == 'resolved'
           assert json.loads(Path('/tmp/risk-review.json').read_text())['decision'] == 'requires_human_review'
           assert json.loads(Path('/tmp/risk-blocked.json').read_text())['decision'] == 'block'
+          graph = json.loads(Path('/tmp/graph.json').read_text())
+          assert graph['decision'] == 'context_available'
+          assert not graph['mutation_authorized']
+          assert {item['service'] for item in graph['knowledge']} == {'checkout-api', 'inventory-api'}
+          assert all(item['result']['decision'] == 'grounded' for item in graph['knowledge'])
           PY
