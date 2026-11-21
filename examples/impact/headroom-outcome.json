@@ -1,0 +1,10 @@
+{
+  "simulation_sha256": "dd39c938d7c996c7a22d16aa5c823c191d180d7d792a8bb8b0cf21a05df13329",
+  "resource_id": "inventory-db",
+  "observed_at": "2026-11-16T13:01:00Z",
+  "unit": "connections",
+  "capacity": 600,
+  "peak_demand": 590,
+  "change_caused_critical_incident": false,
+  "incident_ids": []
+}

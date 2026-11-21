@@ -1,0 +1,14 @@
+{
+  "repository": "platform-example/production",
+  "base_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "head_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "environment": "production",
+  "resource_id": "production-gke",
+  "model": "node_pool_cpu",
+  "before": {
+    "allocatable_cpu_cores": 90
+  },
+  "after": {
+    "allocatable_cpu_cores": 45
+  }
+}

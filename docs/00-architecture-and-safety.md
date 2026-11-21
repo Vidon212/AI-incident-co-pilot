@@ -65,6 +65,10 @@ flowchart TD
     Graph --> Neighborhood[Bounded paths and provenance]
     Neighborhood --> Retrieval
     Neighborhood -. external integration .-> Risk
+    Neighborhood --> Impact[Capacity and transition screens]
+    ChangeModel[Normalized candidate and fresh telemetry] --> Impact
+    Impact --> ChangeReview[Deterministic score and hypothetical failure paths]
+    ChangeReview --> Feedback[Independent post-change comparison]
 ```
 
 ## Implemented capabilities
@@ -84,6 +88,7 @@ flowchart TD
 | 11 | Durable correlated events, progressive evidence, bounded retries, and escalation | [Event-driven investigator](11-stage-11-event-driven-investigator.md) |
 | 12 | Operational GitOps risk checks, selector blast radius, and evidence-bound model commentary | [GitOps PR risk reviewer](12-stage-12-gitops-pr-risk-reviewer.md) |
 | 13 | Typed topology, evidence filtering, bounded traversal, and graph-guided retrieval | [Reliability knowledge graph](13-stage-13-reliability-knowledge-graph.md) |
+| 14 | Capacity models, controller awareness, transition risk, scoring, and outcome comparison | [Change-impact simulator](14-stage-14-change-impact-simulator.md) |
 
 ## Safety model
 
@@ -194,3 +199,13 @@ path cannot establish safety. Graph-selected services can feed the existing Stag
 retriever without bypassing its authority or access policy. Live ingestion, source
 authentication, telemetry correlation, graph persistence, model reasoning, and
 feeding graph-derived context into Stage 12 remain external integrations.
+
+Stage 14 consumes one exact normalized capacity change, a graph snapshot, and a
+bound platform context. It calculates CPU, connection, or serving-capacity screens;
+separates steady-state from transition risk; and traces hypothetical first/second
+order service effects using Stage 13 paths. HPA capacity remains conditional on
+independently verified scaling prerequisites. Versioned scoring is deterministic;
+rollback/canary credits and model commentary cannot cancel a capacity policy block.
+Outcome comparison consumes independent evidence rather than observing deployments.
+Complete plan generation, live collection, source authentication, scheduler and
+performance simulation, model invocation, approval, and execution stay external.

@@ -1,0 +1,67 @@
+{
+  "change_sha256": "c9d4e221e1f0ebc56b64a9bd0ab17db6809ccad7d3631daa2ea0f2bfe1463f0f",
+  "graph_sha256": "25e2094b47a4e96508ae88f995c238a816730732b0490866fa3028afa04864b7",
+  "query": {
+    "root": "payments-workload",
+    "environment": "production",
+    "mode": "impact",
+    "as_of": "2026-11-16T12:01:00Z",
+    "granted_scopes": [
+      "internal",
+      "production"
+    ],
+    "min_confidence": 0.8,
+    "min_observations": 100,
+    "max_age_seconds": 300,
+    "max_hops": 8,
+    "max_nodes": 100
+  },
+  "checks": {
+    "schema": "pass",
+    "plan": "pass",
+    "organization_policy": "pass"
+  },
+  "topology_complete": true,
+  "telemetry": {
+    "id": "replicas-telemetry",
+    "resource_id": "payments-workload",
+    "observed_at": "2026-11-16T12:00:00Z",
+    "window_days": 30,
+    "live_state": {
+      "replicas": 20
+    },
+    "metrics": {
+      "current_demand": 4000,
+      "peak_demand": 7000,
+      "growth_fraction": 0,
+      "safe_rps_per_pod": 420
+    }
+  },
+  "controller": {
+    "kind": "hpa",
+    "observed_at": "2026-11-16T12:00:00Z",
+    "min_replicas": 12,
+    "max_replicas": 30,
+    "prerequisites": {
+      "scaling_signal": "pass",
+      "node_cpu": "pass",
+      "pod_quota": "pass",
+      "pod_ips": "pass",
+      "database": "pass"
+    }
+  },
+  "transition": {
+    "observed_at": "2026-11-16T12:00:00Z",
+    "operation": "rolling_update",
+    "rollback_plan_id": "reviewed-revert-plan",
+    "canary_plan_id": null
+  },
+  "slo_metadata": {
+    "checkout-availability": {
+      "critical": true,
+      "target_fraction": 0.9995
+    }
+  },
+  "similar_incidents": [],
+  "min_headroom_fraction": 0.2
+}

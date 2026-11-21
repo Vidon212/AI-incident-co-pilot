@@ -7,7 +7,7 @@ K8S_DIR ?= deploy/k8s
 KUBE_CONTEXT ?=
 EVENTS_STATE ?= /tmp/incident-copilot-session11.sqlite3
 
-.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk graph graph-rag docker-build docker-run docker-verify k8s-render k8s-deploy
+.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk graph graph-rag impact impact-feedback docker-build docker-run docker-verify k8s-render k8s-deploy
 
 help:
 	@echo "install        Create a virtual environment and install requirements.txt"
@@ -27,6 +27,8 @@ help:
 	@echo "risk           Review the synthetic GitOps change set against operational evidence"
 	@echo "graph          Trace database infrastructure impact through the reliability graph"
 	@echo "graph-rag      Retrieve policy-filtered knowledge for graph-selected services"
+	@echo "impact         Screen growth-adjusted database capacity and restart risk"
+	@echo "impact-feedback Compare that prediction with synthetic post-change observations"
 	@echo "docker-build   Build IMAGE (default: ai-incident-copilot:local)"
 	@echo "docker-run     Run triage in the container"
 	@echo "docker-verify  Run verification in the container"
@@ -85,6 +87,12 @@ graph:
 
 graph-rag:
 	PYTHONPATH=src $(PYTHON) -m incident_copilot.graph_cli --graph examples/graph/platform.json --query examples/graph/database-impact.json --documents examples/graph/documents.json --question "What depends on this database?"
+
+impact:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.impact_cli --change examples/impact/headroom-change.json --context examples/impact/headroom-context.json --graph examples/impact/platform.json
+
+impact-feedback:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.impact_cli --change examples/impact/headroom-change.json --context examples/impact/headroom-context.json --graph examples/impact/platform.json --outcome examples/impact/headroom-outcome.json
 
 docker-build:
 	docker build -t $(IMAGE) .

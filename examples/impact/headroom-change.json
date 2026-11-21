@@ -1,0 +1,14 @@
+{
+  "repository": "platform-example/production",
+  "base_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "head_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "environment": "production",
+  "resource_id": "inventory-db",
+  "model": "database_connections",
+  "before": {
+    "max_connections": 1000
+  },
+  "after": {
+    "max_connections": 600
+  }
+}

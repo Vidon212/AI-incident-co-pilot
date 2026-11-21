@@ -1,0 +1,14 @@
+{
+  "repository": "platform-example/production",
+  "base_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "head_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "environment": "production",
+  "resource_id": "payments-workload",
+  "model": "service_replicas",
+  "before": {
+    "replicas": 20
+  },
+  "after": {
+    "replicas": 12
+  }
+}

@@ -26,6 +26,7 @@ approval, and production changes remain external integrations.
 - Orchestrates correlated incident events with bounded evidence collection, retries, and escalation.
 - Flags GitOps capacity and access risks using fresh telemetry, topology, and cited model assessments.
 - Traces scoped platform dependencies with provenance and graph-guided knowledge retrieval.
+- Screens change capacity, controller limits, transition risk, and potential failure propagation.
 
 ## Quick start
 
@@ -57,6 +58,8 @@ make events PYTHON=.venv/bin/python
 make risk PYTHON=.venv/bin/python
 make graph PYTHON=.venv/bin/python
 make graph-rag PYTHON=.venv/bin/python
+make impact PYTHON=.venv/bin/python
+make impact-feedback PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -89,6 +92,12 @@ checkout services, with owners, SLOs, and historical incidents. `graph-rag` adds
 cited knowledge for those services using the Stage 6 retrieval policy. Graph paths
 show potential dependencies within the supplied snapshot; they do not prove causality.
 
+The impact example returns `requires_human_review` with a score of 70/100: growth
+leaves little database connection headroom and deployment requires a restart.
+Separate fixtures block CPU and connection deficits, and distinguish an HPA ceiling
+from an initial replica count. Scores are reproducible policy weights, not incident
+probabilities. `impact-feedback` compares synthetic post-change measurements.
+
 ## Documentation
 
 | Guide | Details |
@@ -107,7 +116,8 @@ show potential dependencies within the supplied snapshot; they do not prove caus
 | [Stage 11: event-driven investigator](docs/11-stage-11-event-driven-investigator.md) | Durable events, progressive evidence, retries, escalation, and GCP transport reference |
 | [Stage 12: GitOps PR risk reviewer](docs/12-stage-12-gitops-pr-risk-reviewer.md) | Operational invariants, blast radius, evidence-bound assessments, and merge review |
 | [Stage 13: reliability knowledge graph](docs/13-stage-13-reliability-knowledge-graph.md) | Typed topology, provenance, bounded impact/dependency queries, and graph-guided RAG |
-| [Local and Kubernetes deployment](docs/14-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 14: change-impact simulator](docs/14-stage-14-change-impact-simulator.md) | Capacity models, controller awareness, transition risk, deterministic scoring, and outcome feedback |
+| [Local and Kubernetes deployment](docs/15-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.

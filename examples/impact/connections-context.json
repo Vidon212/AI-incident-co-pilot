@@ -1,0 +1,59 @@
+{
+  "change_sha256": "6378e15ea225d5f686c02ab59d69d938e8854d29e452b83ff98034f87b9894d8",
+  "graph_sha256": "25e2094b47a4e96508ae88f995c238a816730732b0490866fa3028afa04864b7",
+  "query": {
+    "root": "inventory-db",
+    "environment": "production",
+    "mode": "impact",
+    "as_of": "2026-11-16T12:01:00Z",
+    "granted_scopes": [
+      "internal",
+      "production"
+    ],
+    "min_confidence": 0.8,
+    "min_observations": 100,
+    "max_age_seconds": 300,
+    "max_hops": 8,
+    "max_nodes": 100
+  },
+  "checks": {
+    "schema": "pass",
+    "plan": "pass",
+    "organization_policy": "pass"
+  },
+  "topology_complete": true,
+  "telemetry": {
+    "id": "connections-telemetry",
+    "resource_id": "inventory-db",
+    "observed_at": "2026-11-16T12:00:00Z",
+    "window_days": 30,
+    "live_state": {
+      "max_connections": 800
+    },
+    "metrics": {
+      "current_demand": 310,
+      "peak_demand": 610,
+      "growth_fraction": 0
+    }
+  },
+  "controller": null,
+  "transition": {
+    "observed_at": "2026-11-16T12:00:00Z",
+    "operation": "restart",
+    "rollback_plan_id": "reviewed-revert-plan",
+    "canary_plan_id": null
+  },
+  "slo_metadata": {
+    "checkout-availability": {
+      "critical": true,
+      "target_fraction": 0.9995
+    }
+  },
+  "similar_incidents": [
+    {
+      "incident_id": "INC-892",
+      "failure_mode": "connection_exhaustion"
+    }
+  ],
+  "min_headroom_fraction": 0.2
+}
