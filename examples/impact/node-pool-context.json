@@ -1,0 +1,54 @@
+{
+  "change_sha256": "5462b03443117a3234120c060704f70df683add3345e12ac7a1a03f6b37b3530",
+  "graph_sha256": "25e2094b47a4e96508ae88f995c238a816730732b0490866fa3028afa04864b7",
+  "query": {
+    "root": "production-gke",
+    "environment": "production",
+    "mode": "impact",
+    "as_of": "2026-11-16T12:01:00Z",
+    "granted_scopes": [
+      "internal",
+      "production"
+    ],
+    "min_confidence": 0.8,
+    "min_observations": 100,
+    "max_age_seconds": 300,
+    "max_hops": 8,
+    "max_nodes": 100
+  },
+  "checks": {
+    "schema": "pass",
+    "plan": "pass",
+    "organization_policy": "pass"
+  },
+  "topology_complete": true,
+  "telemetry": {
+    "id": "node-pool-telemetry",
+    "resource_id": "production-gke",
+    "observed_at": "2026-11-16T12:00:00Z",
+    "window_days": 30,
+    "live_state": {
+      "allocatable_cpu_cores": 90
+    },
+    "metrics": {
+      "current_demand": 71,
+      "peak_demand": 84,
+      "growth_fraction": 0
+    }
+  },
+  "controller": null,
+  "transition": {
+    "observed_at": "2026-11-16T12:00:00Z",
+    "operation": "replacement",
+    "rollback_plan_id": "reviewed-revert-plan",
+    "canary_plan_id": null
+  },
+  "slo_metadata": {
+    "checkout-availability": {
+      "critical": true,
+      "target_fraction": 0.9995
+    }
+  },
+  "similar_incidents": [],
+  "min_headroom_fraction": 0.2
+}

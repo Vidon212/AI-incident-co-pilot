@@ -1,0 +1,14 @@
+{
+  "simulation_sha256": "0e1a02d56bbf54045303840e55d6d060d929486a7f236578777b30b6ec74a70e",
+  "explanations": [
+    {
+      "service_id": "checkout-api",
+      "evidence_ids": [
+        "impact-edge-18",
+        "impact-edge-20",
+        "replicas-telemetry"
+      ],
+      "text": "Twelve pods provide 5,040 RPS initially, below the 7,000 RPS peak. The verified HPA ceiling permits 30 pods, while at least 17 are needed. Scaling delay and rolling-update behavior still need service-owner review; the caller path could inherit latency or errors."
+    }
+  ]
+}

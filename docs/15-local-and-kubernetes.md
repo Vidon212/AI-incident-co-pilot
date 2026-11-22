@@ -29,6 +29,8 @@ make capability PYTHON=.venv/bin/python
 make risk PYTHON=.venv/bin/python
 make graph PYTHON=.venv/bin/python
 make graph-rag PYTHON=.venv/bin/python
+make impact PYTHON=.venv/bin/python
+make impact-feedback PYTHON=.venv/bin/python
 ```
 
 Replace `python3.13` with your installed Python 3.11+ executable. `requirements.txt`
@@ -172,6 +174,7 @@ provenance, and approval binding in the external workflow.
 | Evaluation | `pass` | `block` | Invalid input |
 | Rollout | `eligible_for_next_stage` | `block` | Invalid input |
 | Capability | `eligible_for_preapproved_gitops` | `requires_human_review` | Invalid input |
+| Impact | `requires_human_review` | `block` or `investigate` | Invalid input |
 
 Docker preserves the CLI exit status. Make may report its own error status for a
 failed recipe; read the JSON result as well. Kubernetes marks a nonzero exit as a

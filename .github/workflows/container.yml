@@ -52,6 +52,21 @@ jobs:
             --query examples/graph/database-impact.json \
             --documents examples/graph/documents.json \
             --question 'What depends on this database?' > /tmp/graph.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.impact_cli --change examples/impact/replicas-change.json \
+            --context examples/impact/replicas-context.json --graph examples/impact/platform.json \
+            --assessment examples/impact/replicas-assessment.json > /tmp/impact-review.json
+          if docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.impact_cli --change examples/impact/node-pool-change.json \
+            --context examples/impact/node-pool-context.json \
+            --graph examples/impact/platform.json > /tmp/impact-blocked.json; then
+            echo "Expected the CPU capacity contradiction to be blocked" >&2
+            exit 1
+          else
+            test "$?" -eq 1
+          fi
           if docker run --rm --read-only --network none --cap-drop ALL \
             --security-opt no-new-privileges ai-incident-copilot:local \
             incident_copilot.pr_risk_cli --changes examples/pr-risk/unsafe-changes.json \
@@ -77,4 +92,10 @@ jobs:
           assert not graph['mutation_authorized']
           assert {item['service'] for item in graph['knowledge']} == {'checkout-api', 'inventory-api'}
           assert all(item['result']['decision'] == 'grounded' for item in graph['knowledge'])
+          impact = json.loads(Path('/tmp/impact-review.json').read_text())
+          assert impact['decision'] == 'requires_human_review'
+          assert impact['capacity']['controller']['required_replicas'] == 17
+          assert impact['model_explanations']
+          assert not impact['merge_authorized']
+          assert json.loads(Path('/tmp/impact-blocked.json').read_text())['decision'] == 'block'
           PY

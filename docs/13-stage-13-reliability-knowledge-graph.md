@@ -142,6 +142,8 @@ rollout, calculate a blast-radius risk score, or approve merges. A historical
 `AFFECTED` link is evidence of prior impact, not proof that a new change will cause
 the same failure. Live telemetry and model interpretation remain external, as does
 mapping graph-derived relationships into Stage 12's trusted resource catalog.
-Session 14's change-impact simulation is separate future work.
+Stage 14 adds capacity screening and hypothetical failure paths on this graph;
+live integration into Stage 12 remains separate work.
 
-Continue with [local and Kubernetes deployment](14-local-and-kubernetes.md).
+Continue with [Stage 14: change-impact simulator](14-stage-14-change-impact-simulator.md)
+or [local and Kubernetes deployment](15-local-and-kubernetes.md).
