@@ -27,6 +27,7 @@ approval, and production changes remain external integrations.
 - Flags GitOps capacity and access risks using fresh telemetry, topology, and cited model assessments.
 - Traces scoped platform dependencies with provenance and graph-guided knowledge retrieval.
 - Screens change capacity, controller limits, transition risk, and potential failure propagation.
+- Reviews six autonomy levels using action risk, scoped approvals, and predeclared verification.
 
 ## Quick start
 
@@ -60,6 +61,8 @@ make graph PYTHON=.venv/bin/python
 make graph-rag PYTHON=.venv/bin/python
 make impact PYTHON=.venv/bin/python
 make impact-feedback PYTHON=.venv/bin/python
+make autonomy PYTHON=.venv/bin/python
+make autonomy-database PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -98,6 +101,11 @@ Separate fixtures block CPU and connection deficits, and distinguish an HPA ceil
 from an initial replica count. Scores are reproducible policy weights, not incident
 probabilities. `impact-feedback` compares synthetic post-change measurements.
 
+The autonomy example reaches Level 5 (`EXECUTE_AND_VERIFY`) eligibility by reusing
+the scoped Stage 10 HPA preapproval and rollout checks. The database example stays
+at Level 3 (`PREPARE_CHANGE`). These artifacts grant no execution credentials;
+confidence and incident urgency cannot bypass action-risk or approval gates.
+
 ## Documentation
 
 | Guide | Details |
@@ -117,7 +125,8 @@ probabilities. `impact-feedback` compares synthetic post-change measurements.
 | [Stage 12: GitOps PR risk reviewer](docs/12-stage-12-gitops-pr-risk-reviewer.md) | Operational invariants, blast radius, evidence-bound assessments, and merge review |
 | [Stage 13: reliability knowledge graph](docs/13-stage-13-reliability-knowledge-graph.md) | Typed topology, provenance, bounded impact/dependency queries, and graph-guided RAG |
 | [Stage 14: change-impact simulator](docs/14-stage-14-change-impact-simulator.md) | Capacity models, controller awareness, transition risk, deterministic scoring, and outcome feedback |
-| [Local and Kubernetes deployment](docs/15-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 15: autonomy decision engine](docs/15-stage-15-autonomy-decision-engine.md) | Six-level eligibility, urgency, risk vetoes, scoped approvals, and verification transactions |
+| [Local and Kubernetes deployment](docs/16-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.

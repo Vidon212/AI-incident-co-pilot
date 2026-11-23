@@ -206,6 +206,7 @@ plan completeness, observed safe pod capacity, HPA prerequisites, SLO criticalit
 historical similarity, and recovery/canary evidence independently of model output.
 Raw rendering/plan adapters, live cloud or Kubernetes APIs, model invocation,
 GitHub checks, branch protection, approval, merge, and apply are not implemented.
-Session 15's autonomy decision engine is separate future work.
+Stage 15 adds a risk-aware autonomy ladder with existing scoped approval gates.
 
-Continue with [local and Kubernetes deployment](15-local-and-kubernetes.md).
+Continue with [Stage 15: autonomy decision engine](15-stage-15-autonomy-decision-engine.md)
+or [local and Kubernetes deployment](16-local-and-kubernetes.md).

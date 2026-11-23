@@ -7,7 +7,7 @@ K8S_DIR ?= deploy/k8s
 KUBE_CONTEXT ?=
 EVENTS_STATE ?= /tmp/incident-copilot-session11.sqlite3
 
-.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk graph graph-rag impact impact-feedback docker-build docker-run docker-verify k8s-render k8s-deploy
+.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk graph graph-rag impact impact-feedback autonomy autonomy-database docker-build docker-run docker-verify k8s-render k8s-deploy
 
 help:
 	@echo "install        Create a virtual environment and install requirements.txt"
@@ -29,6 +29,8 @@ help:
 	@echo "graph-rag      Retrieve policy-filtered knowledge for graph-selected services"
 	@echo "impact         Screen growth-adjusted database capacity and restart risk"
 	@echo "impact-feedback Compare that prediction with synthetic post-change observations"
+	@echo "autonomy       Review the scoped HPA execution-and-verification eligibility"
+	@echo "autonomy-database Review preparation-only eligibility for a database change"
 	@echo "docker-build   Build IMAGE (default: ai-incident-copilot:local)"
 	@echo "docker-run     Run triage in the container"
 	@echo "docker-verify  Run verification in the container"
@@ -93,6 +95,12 @@ impact:
 
 impact-feedback:
 	PYTHONPATH=src $(PYTHON) -m incident_copilot.impact_cli --change examples/impact/headroom-change.json --context examples/impact/headroom-context.json --graph examples/impact/platform.json --outcome examples/impact/headroom-outcome.json
+
+autonomy:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.autonomy_cli --proposal examples/autonomy/hpa-proposal.json --context examples/autonomy/hpa-context.json --capability-platform examples/rollout/capability-platform.json --replay examples/rollout/replay.json
+
+autonomy-database:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.autonomy_cli --proposal examples/autonomy/database-proposal.json --context examples/autonomy/database-context.json --impact-bundle examples/autonomy/database-impact-bundle.json
 
 docker-build:
 	docker build -t $(IMAGE) .

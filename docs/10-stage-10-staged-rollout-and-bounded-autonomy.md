@@ -181,4 +181,4 @@ insufficient samples, poor feedback, unverified actions, and invalid preapproval
 Container CI checks the packaged rollout example with network access disabled.
 
 Continue with [Stage 11: event-driven investigation](11-stage-11-event-driven-investigator.md)
-or [local and Kubernetes deployment](15-local-and-kubernetes.md).
+or [local and Kubernetes deployment](16-local-and-kubernetes.md).
