@@ -1,0 +1,80 @@
+{
+  "proposal_sha256": "fc05cff6b0141867234c4e484b7d11530d61e68726548ca835448259230b5694",
+  "evaluated_at": "2026-11-02T12:00:00Z",
+  "observed_at": "2026-11-02T11:59:00Z",
+  "enabled": true,
+  "allowed_actions": [
+    "increase_hpa_max",
+    "rollback",
+    "change_capacity",
+    "change_network",
+    "recreate_database",
+    "restart_pod"
+  ],
+  "service": "payments-api",
+  "resource": "payments-api",
+  "namespace": "production",
+  "environment": "production",
+  "affected_services": [
+    "payments-api"
+  ],
+  "reversibility": "high",
+  "requires_recreation": false,
+  "backward_incompatible_migration": false,
+  "gitops_managed": true,
+  "cluster_headroom": 0.61,
+  "downstream_headroom": 0.5800000000000001,
+  "historical_attempts": 17,
+  "historical_successes": 17,
+  "error_budget_remaining": 0.74,
+  "burn_rate": 2,
+  "change_risk": "low",
+  "transition": "in_place",
+  "remediation_context": {
+    "resource": "payments-api",
+    "namespace": "production",
+    "environment": "production",
+    "current_state": {
+      "replicas": 10,
+      "hpa.maxReplicas": 10
+    },
+    "observed_replicas": 10,
+    "db_utilization": 0.38,
+    "hpa_max_replicas": 10,
+    "approved_bounds": {
+      "replicas": 20,
+      "hpa.maxReplicas": 20
+    },
+    "checks": {
+      "rollback_possible": true,
+      "capacity_available": true,
+      "quota_available": true,
+      "cost_reviewed": true,
+      "dependency_capacity_reviewed": true,
+      "existing_limit_reviewed": true,
+      "load_test_supported": true
+    },
+    "blast_radius": 1,
+    "max_blast_radius": 1,
+    "git_path": "apps/production/payments-api/values.yaml",
+    "controller": "argocd",
+    "known_good_version": null,
+    "error_budget_remaining": 0.74
+  },
+  "plan": {
+    "changes": [
+      {
+        "resource": "payments-api",
+        "namespace": "production",
+        "environment": "production",
+        "path": "apps/production/payments-api/values.yaml",
+        "controller": "argocd",
+        "operation": "update",
+        "field": "hpa.maxReplicas",
+        "before": 10,
+        "after": 20
+      }
+    ]
+  },
+  "approval": null
+}

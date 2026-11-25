@@ -69,6 +69,9 @@ flowchart TD
     ChangeModel[Normalized candidate and fresh telemetry] --> Impact
     Impact --> ChangeReview[Deterministic score and hypothetical failure paths]
     ChangeReview --> Feedback[Independent post-change comparison]
+    ChangeReview --> Autonomy[ActionRisk and autonomy ladder]
+    Grant --> Autonomy
+    Autonomy --> Transaction[Bound verification and recovery contract]
 ```
 
 ## Implemented capabilities
@@ -89,6 +92,7 @@ flowchart TD
 | 12 | Operational GitOps risk checks, selector blast radius, and evidence-bound model commentary | [GitOps PR risk reviewer](12-stage-12-gitops-pr-risk-reviewer.md) |
 | 13 | Typed topology, evidence filtering, bounded traversal, and graph-guided retrieval | [Reliability knowledge graph](13-stage-13-reliability-knowledge-graph.md) |
 | 14 | Capacity models, controller awareness, transition risk, scoring, and outcome comparison | [Change-impact simulator](14-stage-14-change-impact-simulator.md) |
+| 15 | Risk-aware autonomy levels, independent approvals, urgency, and verification transactions | [Autonomy decision engine](15-stage-15-autonomy-decision-engine.md) |
 
 ## Safety model
 
@@ -209,3 +213,13 @@ rollback/canary credits and model commentary cannot cancel a capacity policy blo
 Outcome comparison consumes independent evidence rather than observing deployments.
 Complete plan generation, live collection, source authentication, scheduler and
 performance simulation, model invocation, approval, and execution stay external.
+
+Stage 15 reviews eligibility on a six-level autonomy ladder. Risk dimensions and
+urgency are separate; high confidence or SLO burn cannot authorize destructive
+actions. Execution-level eligibility requires the existing complete-plan Stage 3
+review and an exact independent approval, or the scoped Stage 10 HPA catalog and
+rollout/preapproval review. Database capacity risk is recomputed from Stage 14
+source inputs. Every execution-level artifact includes predeclared verification
+and recovery behavior. The local evaluator grants no credentials and performs no
+PR, merge, apply, verification, or revert. Runtime authorization and execution
+remain external, including authorization for any recovery action.

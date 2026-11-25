@@ -1,0 +1,81 @@
+{
+  "proposal_sha256": "709551eb58c128cac5baad6e8a53da36f3dbdcb4493056277266637a99b66b77",
+  "evaluated_at": "2026-11-02T12:00:00Z",
+  "observed_at": "2026-11-02T11:59:00Z",
+  "enabled": true,
+  "allowed_actions": [
+    "increase_hpa_max",
+    "rollback",
+    "change_capacity",
+    "change_network",
+    "recreate_database",
+    "restart_pod"
+  ],
+  "service": "checkout-api",
+  "resource": "checkout-api",
+  "namespace": "production",
+  "environment": "production",
+  "affected_services": [
+    "checkout-api"
+  ],
+  "reversibility": "low",
+  "requires_recreation": false,
+  "backward_incompatible_migration": true,
+  "gitops_managed": true,
+  "cluster_headroom": 0.61,
+  "downstream_headroom": 0.5800000000000001,
+  "historical_attempts": 23,
+  "historical_successes": 23,
+  "error_budget_remaining": 0.04,
+  "burn_rate": 14,
+  "change_risk": "low",
+  "transition": "rolling_update",
+  "remediation_context": {
+    "resource": "checkout-api",
+    "namespace": "production",
+    "environment": "production",
+    "current_state": {
+      "image.tag": "v2.21"
+    },
+    "observed_replicas": 10,
+    "db_utilization": 0.38,
+    "hpa_max_replicas": 10,
+    "approved_bounds": {
+      "replicas": 20,
+      "hpa.maxReplicas": 20
+    },
+    "checks": {
+      "rollback_possible": true,
+      "capacity_available": true,
+      "quota_available": true,
+      "cost_reviewed": true,
+      "dependency_capacity_reviewed": true,
+      "existing_limit_reviewed": true,
+      "load_test_supported": true,
+      "regression_evidence": true,
+      "dependencies_healthy": true
+    },
+    "blast_radius": 1,
+    "max_blast_radius": 1,
+    "git_path": "apps/production/checkout-api/values.yaml",
+    "controller": "argocd",
+    "known_good_version": "v2.20",
+    "error_budget_remaining": 0.04
+  },
+  "plan": {
+    "changes": [
+      {
+        "resource": "checkout-api",
+        "namespace": "production",
+        "environment": "production",
+        "path": "apps/production/checkout-api/values.yaml",
+        "controller": "argocd",
+        "operation": "update",
+        "field": "image.tag",
+        "before": "v2.21",
+        "after": "v2.20"
+      }
+    ]
+  },
+  "approval": null
+}

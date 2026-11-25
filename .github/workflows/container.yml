@@ -57,6 +57,16 @@ jobs:
             incident_copilot.impact_cli --change examples/impact/replicas-change.json \
             --context examples/impact/replicas-context.json --graph examples/impact/platform.json \
             --assessment examples/impact/replicas-assessment.json > /tmp/impact-review.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.autonomy_cli --proposal examples/autonomy/hpa-proposal.json \
+            --context examples/autonomy/hpa-context.json \
+            --capability-platform examples/rollout/capability-platform.json \
+            --replay examples/rollout/replay.json > /tmp/autonomy.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.autonomy_cli --proposal examples/autonomy/rollback-proposal.json \
+            --context examples/autonomy/migration-context.json > /tmp/autonomy-migration.json
           if docker run --rm --read-only --network none --cap-drop ALL \
             --security-opt no-new-privileges ai-incident-copilot:local \
             incident_copilot.impact_cli --change examples/impact/node-pool-change.json \
@@ -98,4 +108,9 @@ jobs:
           assert impact['model_explanations']
           assert not impact['merge_authorized']
           assert json.loads(Path('/tmp/impact-blocked.json').read_text())['decision'] == 'block'
+          autonomy = json.loads(Path('/tmp/autonomy.json').read_text())
+          assert autonomy['autonomy_level'] == 5
+          assert not autonomy['execution_authorized']
+          assert autonomy['transaction']['unexpected_signal'] == 'freeze_and_escalate'
+          assert json.loads(Path('/tmp/autonomy-migration.json').read_text())['autonomy_level'] == 2
           PY
