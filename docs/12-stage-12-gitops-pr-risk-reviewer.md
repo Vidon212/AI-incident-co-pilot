@@ -179,4 +179,4 @@ manifest/provider adapters, GitHub review posting, merge, and apply remain live
 integration work. The existing response loop and Stage 11 orchestrator are unchanged.
 
 Continue with [Stage 13: reliability knowledge graph](13-stage-13-reliability-knowledge-graph.md)
-or [local and Kubernetes deployment](16-local-and-kubernetes.md).
+or [local and Kubernetes deployment](17-local-and-kubernetes.md).

@@ -6,8 +6,9 @@ IMAGE ?= ai-incident-copilot:local
 K8S_DIR ?= deploy/k8s
 KUBE_CONTEXT ?=
 EVENTS_STATE ?= /tmp/incident-copilot-session11.sqlite3
+CONTROLLER_STATE ?= /tmp/incident-copilot-session16.sqlite3
 
-.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk graph graph-rag impact impact-feedback autonomy autonomy-database docker-build docker-run docker-verify k8s-render k8s-deploy
+.PHONY: help install test triage context remediation verify drift rag agent investigate evaluate rollout capability events risk graph graph-rag impact impact-feedback autonomy autonomy-database controller controller-rollback controller-render docker-build docker-run docker-verify k8s-render k8s-deploy
 
 help:
 	@echo "install        Create a virtual environment and install requirements.txt"
@@ -31,6 +32,9 @@ help:
 	@echo "impact-feedback Compare that prediction with synthetic post-change observations"
 	@echo "autonomy       Review the scoped HPA execution-and-verification eligibility"
 	@echo "autonomy-database Review preparation-only eligibility for a database change"
+	@echo "controller     Replay durable reliability-controller reconciliation"
+	@echo "controller-rollback Replay independent rollback review and verification"
+	@echo "controller-render Render reference CRDs and status-only RBAC offline"
 	@echo "docker-build   Build IMAGE (default: ai-incident-copilot:local)"
 	@echo "docker-run     Run triage in the container"
 	@echo "docker-verify  Run verification in the container"
@@ -101,6 +105,15 @@ autonomy:
 
 autonomy-database:
 	PYTHONPATH=src $(PYTHON) -m incident_copilot.autonomy_cli --proposal examples/autonomy/database-proposal.json --context examples/autonomy/database-context.json --impact-bundle examples/autonomy/database-impact-bundle.json
+
+controller:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.controller_cli --platform examples/controller/platform.json --review-context examples/autonomy/hpa-context.json --capability-platform examples/rollout/capability-platform.json --replay examples/rollout/replay.json --scenario examples/controller/success-scenario.json --state "$(CONTROLLER_STATE)"
+
+controller-rollback:
+	PYTHONPATH=src $(PYTHON) -m incident_copilot.controller_cli --platform examples/controller/platform.json --review-context examples/autonomy/hpa-context.json --capability-platform examples/rollout/capability-platform.json --replay examples/rollout/replay.json --scenario examples/controller/rollback-scenario.json --state :memory:
+
+controller-render:
+	kubectl kustomize deploy/reliability
 
 docker-build:
 	docker build -t $(IMAGE) .

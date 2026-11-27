@@ -172,7 +172,8 @@ confirm convergence, deduplicate execution, or initiate a revert. Fresh-state
 preconditions, executor identity, serialization, approval expiry/revocation,
 controller operations, SLO collection, Stage 4 verification, and authorization of
 any recovery action remain external. A failed verification is not blanket
-permission to restore an unsafe state. Session 16's Kubernetes reliability
-controller is separate future work.
+permission to restore an unsafe state. Stage 16 adds the Kubernetes-shaped reconciliation core; a live API adapter
+remains separate work.
 
-Continue with [local and Kubernetes deployment](16-local-and-kubernetes.md).
+Continue with [Stage 16: Kubernetes reliability controller](16-stage-16-kubernetes-reliability-controller.md)
+or [local and Kubernetes deployment](17-local-and-kubernetes.md).

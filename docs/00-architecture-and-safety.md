@@ -72,6 +72,11 @@ flowchart TD
     ChangeReview --> Autonomy[ActionRisk and autonomy ladder]
     Grant --> Autonomy
     Autonomy --> Transaction[Bound verification and recovery contract]
+    InvestigationCR[Investigation CR snapshot] --> Reconciler[Durable reconciliation core]
+    ProposalCR[RemediationProposal and RemediationPolicy] --> Reconciler
+    Transaction --> Reconciler
+    Reconciler --> Work[Stable work requests and controller-owned status]
+    Receipts[Independent collector / reviewer / GitOps / verifier receipts] --> Reconciler
 ```
 
 ## Implemented capabilities
@@ -93,6 +98,7 @@ flowchart TD
 | 13 | Typed topology, evidence filtering, bounded traversal, and graph-guided retrieval | [Reliability knowledge graph](13-stage-13-reliability-knowledge-graph.md) |
 | 14 | Capacity models, controller awareness, transition risk, scoring, and outcome comparison | [Change-impact simulator](14-stage-14-change-impact-simulator.md) |
 | 15 | Risk-aware autonomy levels, independent approvals, urgency, and verification transactions | [Autonomy decision engine](15-stage-15-autonomy-decision-engine.md) |
+| 16 | Reliability CRDs, durable reconciliation, independent receipts, GitOps idempotence, and recovery states | [Kubernetes reliability controller](16-stage-16-kubernetes-reliability-controller.md) |
 
 ## Safety model
 
@@ -223,3 +229,13 @@ source inputs. Every execution-level artifact includes predeclared verification
 and recovery behavior. The local evaluator grants no credentials and performs no
 PR, merge, apply, verification, or revert. Runtime authorization and execution
 remain external, including authorization for any recovery action.
+
+Stage 16 adds Kubernetes CRD reference manifests and a local SQLite reconciliation
+core for Investigation, RemediationProposal, and RemediationPolicy. It persists
+immutable specs, controller-owned status, revision conflicts, independent receipts,
+and stable outbox requests. It never patches HPAs or executes Git work. Separate
+receipts establish convergence and verified user recovery; rollback requires a new
+independent safety/approval receipt and then verification. The reference RBAC can
+write investigation/proposal status only. Kubernetes watch/status CAS, admission,
+authentication, work dispatch, runtime preconditions, execution, revocation, and
+distributed durable-state coordination remain integrations.

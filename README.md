@@ -28,6 +28,7 @@ approval, and production changes remain external integrations.
 - Traces scoped platform dependencies with provenance and graph-guided knowledge retrieval.
 - Screens change capacity, controller limits, transition risk, and potential failure propagation.
 - Reviews six autonomy levels using action risk, scoped approvals, and predeclared verification.
+- Reconciles Kubernetes-shaped reliability resources with durable status and deduplicated GitOps work.
 
 ## Quick start
 
@@ -63,6 +64,8 @@ make impact PYTHON=.venv/bin/python
 make impact-feedback PYTHON=.venv/bin/python
 make autonomy PYTHON=.venv/bin/python
 make autonomy-database PYTHON=.venv/bin/python
+make controller PYTHON=.venv/bin/python
+make controller-rollback PYTHON=.venv/bin/python
 ```
 
 `requirements.txt` installs the local package; runtime code uses only the Python
@@ -106,6 +109,12 @@ the scoped Stage 10 HPA preapproval and rollout checks. The database example sta
 at Level 3 (`PREPARE_CHANGE`). These artifacts grant no execution credentials;
 confidence and incident urgency cannot bypass action-risk or approval gates.
 
+The controller example reaches `Succeeded` only after independent GitOps and SLO
+receipts. Its SQLite status and outbox survive reruns. The rollback example reaches
+`RolledBack` after a separate reversal review and verification. Stage 16 includes
+CRD/RBAC reference manifests; the CLI is a local reconciliation core, not a live
+Kubernetes operator.
+
 ## Documentation
 
 | Guide | Details |
@@ -126,7 +135,8 @@ confidence and incident urgency cannot bypass action-risk or approval gates.
 | [Stage 13: reliability knowledge graph](docs/13-stage-13-reliability-knowledge-graph.md) | Typed topology, provenance, bounded impact/dependency queries, and graph-guided RAG |
 | [Stage 14: change-impact simulator](docs/14-stage-14-change-impact-simulator.md) | Capacity models, controller awareness, transition risk, deterministic scoring, and outcome feedback |
 | [Stage 15: autonomy decision engine](docs/15-stage-15-autonomy-decision-engine.md) | Six-level eligibility, urgency, risk vetoes, scoped approvals, and verification transactions |
-| [Local and Kubernetes deployment](docs/16-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
+| [Stage 16: Kubernetes reliability controller](docs/16-stage-16-kubernetes-reliability-controller.md) | CRDs, durable reconciliation, role-bound receipts, stable work IDs, and recovery states |
+| [Local and Kubernetes deployment](docs/17-local-and-kubernetes.md) | Custom inputs, kind, registry images, Jobs, logs, and reruns |
 
 Kubernetes runs the CLI as a batch Job using [`deploy/k8s`](deploy/k8s).
 Follow the deployment guide to load or publish the image and select your cluster.

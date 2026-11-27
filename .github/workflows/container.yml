@@ -67,6 +67,13 @@ jobs:
             --security-opt no-new-privileges ai-incident-copilot:local \
             incident_copilot.autonomy_cli --proposal examples/autonomy/rollback-proposal.json \
             --context examples/autonomy/migration-context.json > /tmp/autonomy-migration.json
+          docker run --rm --read-only --network none --cap-drop ALL \
+            --security-opt no-new-privileges ai-incident-copilot:local \
+            incident_copilot.controller_cli --platform examples/controller/platform.json \
+            --scenario examples/controller/success-scenario.json \
+            --review-context examples/autonomy/hpa-context.json \
+            --capability-platform examples/rollout/capability-platform.json \
+            --replay examples/rollout/replay.json --state :memory: > /tmp/controller.json
           if docker run --rm --read-only --network none --cap-drop ALL \
             --security-opt no-new-privileges ai-incident-copilot:local \
             incident_copilot.impact_cli --change examples/impact/node-pool-change.json \
@@ -113,4 +120,8 @@ jobs:
           assert not autonomy['execution_authorized']
           assert autonomy['transaction']['unexpected_signal'] == 'freeze_and_escalate'
           assert json.loads(Path('/tmp/autonomy-migration.json').read_text())['autonomy_level'] == 2
+          controller = json.loads(Path('/tmp/controller.json').read_text())
+          assert any(item['status']['phase'] == 'Succeeded' for item in controller['resources'])
+          assert sum(item['kind'] == 'request_git_workflow' for item in controller['pending_work']) == 1
+          assert all(not item['executionAuthorized'] for item in controller['pending_work'])
           PY

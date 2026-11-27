@@ -1,0 +1,349 @@
+{
+  "apiVersion": "apiextensions.k8s.io/v1",
+  "kind": "CustomResourceDefinition",
+  "metadata": {
+    "name": "remediationpolicies.reliability.platform.io"
+  },
+  "spec": {
+    "group": "reliability.platform.io",
+    "scope": "Namespaced",
+    "names": {
+      "plural": "remediationpolicies",
+      "singular": "remediationpolicy",
+      "kind": "RemediationPolicy"
+    },
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true,
+        "subresources": {
+          "status": {}
+        },
+        "schema": {
+          "openAPIV3Schema": {
+            "type": "object",
+            "properties": {
+              "apiVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 253
+              },
+              "kind": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 253
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "spec": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "increase_hpa_max"
+                    ]
+                  },
+                  "environments": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 253
+                    },
+                    "minItems": 1,
+                    "maxItems": 50
+                  },
+                  "services": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 253
+                    },
+                    "minItems": 1,
+                    "maxItems": 50
+                  },
+                  "minimumConfidence": {
+                    "type": "number",
+                    "minimum": 0.9,
+                    "maximum": 1
+                  },
+                  "maximumIncrease": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 2
+                  },
+                  "minimumClusterHeadroom": {
+                    "type": "number",
+                    "minimum": 0.3,
+                    "maximum": 1
+                  },
+                  "minimumHistoricalSuccessRate": {
+                    "type": "number",
+                    "minimum": 0.95,
+                    "maximum": 1
+                  },
+                  "maximumAutonomyLevel": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 5
+                  }
+                },
+                "required": [
+                  "action",
+                  "environments",
+                  "services",
+                  "minimumConfidence",
+                  "maximumIncrease",
+                  "minimumClusterHeadroom",
+                  "minimumHistoricalSuccessRate",
+                  "maximumAutonomyLevel"
+                ],
+                "maxProperties": 8,
+                "x-kubernetes-validations": [
+                  {
+                    "rule": "self == oldSelf",
+                    "message": "spec is immutable; create a new resource for a new intent or policy"
+                  }
+                ]
+              },
+              "status": {
+                "type": "object",
+                "properties": {
+                  "phase": {
+                    "type": "string",
+                    "enum": [
+                      "Pending",
+                      "Collecting",
+                      "Analyzing",
+                      "Completed",
+                      "Active",
+                      "Proposed",
+                      "Validating",
+                      "AwaitingApproval",
+                      "Authorized",
+                      "Executing",
+                      "AwaitingConvergence",
+                      "Verifying",
+                      "Failed",
+                      "RollingBack",
+                      "VerifyingRollback",
+                      "Succeeded",
+                      "RolledBack",
+                      "Denied",
+                      "Escalated",
+                      "NoChange"
+                    ]
+                  },
+                  "observedGeneration": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 1000000
+                  },
+                  "specSha256": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "toolCalls": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10
+                  },
+                  "lastTransitionTime": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 253
+                  },
+                  "evidence": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 253
+                        },
+                        "collector": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 253
+                        },
+                        "observedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "collector",
+                        "observedAt"
+                      ],
+                      "maxProperties": 3
+                    },
+                    "minItems": 1,
+                    "maxItems": 50
+                  },
+                  "primaryHypothesis": {
+                    "type": "object",
+                    "properties": {
+                      "cause": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 253
+                      },
+                      "confidence": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "evidenceIds": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 253
+                        },
+                        "minItems": 1,
+                        "maxItems": 50
+                      }
+                    },
+                    "required": [
+                      "cause",
+                      "confidence",
+                      "evidenceIds"
+                    ],
+                    "maxProperties": 3
+                  },
+                  "reviewSha256": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "policySha256": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "autonomyLevel": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 5
+                  },
+                  "authorizationExpiresAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "operationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "rollbackOperationId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "completedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "headRevision": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "verification": {
+                    "type": "object",
+                    "properties": {
+                      "outcome": {
+                        "type": "string",
+                        "enum": [
+                          "SUCCESS",
+                          "FAILED",
+                          "INCONCLUSIVE"
+                        ]
+                      },
+                      "underlying_problem": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 253
+                      },
+                      "reasons": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000
+                        },
+                        "minItems": 0,
+                        "maxItems": 100
+                      },
+                      "evaluated_signals": {
+                        "type": "object",
+                        "properties": {
+                          "before": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "number"
+                            },
+                            "maxProperties": 100
+                          },
+                          "after": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "number"
+                            },
+                            "maxProperties": 100
+                          }
+                        },
+                        "required": [
+                          "before",
+                          "after"
+                        ],
+                        "maxProperties": 2
+                      },
+                      "verification_contract_sha256": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                      }
+                    },
+                    "required": [
+                      "outcome",
+                      "underlying_problem",
+                      "reasons",
+                      "evaluated_signals",
+                      "verification_contract_sha256"
+                    ],
+                    "maxProperties": 5
+                  }
+                },
+                "required": [],
+                "maxProperties": 17
+              }
+            },
+            "required": [
+              "spec"
+            ]
+          }
+        },
+        "additionalPrinterColumns": [
+          {
+            "name": "Phase",
+            "type": "string",
+            "jsonPath": ".status.phase"
+          }
+        ]
+      }
+    ]
+  }
+}
