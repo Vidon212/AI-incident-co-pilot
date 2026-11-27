@@ -146,4 +146,4 @@ Stage 14 adds capacity screening and hypothetical failure paths on this graph;
 live integration into Stage 12 remains separate work.
 
 Continue with [Stage 14: change-impact simulator](14-stage-14-change-impact-simulator.md)
-or [local and Kubernetes deployment](16-local-and-kubernetes.md).
+or [local and Kubernetes deployment](17-local-and-kubernetes.md).

@@ -1,0 +1,22 @@
+{
+  "namespace": "production",
+  "principals": {
+    "controller": "controller-principal",
+    "collector": "collector-principal",
+    "investigator": "investigator-principal",
+    "reviewer": "reviewer-principal",
+    "gitops": "gitops-principal",
+    "verifier": "verifier-principal"
+  },
+  "targets": {
+    "hpa-payments-uid": {
+      "name": "payments-api",
+      "namespace": "production",
+      "service": "payments-api",
+      "environment": "production",
+      "repository": "platform-example/production",
+      "gitPath": "apps/production/payments-api/values.yaml",
+      "controller": "argocd"
+    }
+  }
+}

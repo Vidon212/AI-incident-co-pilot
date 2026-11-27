@@ -209,4 +209,4 @@ GitHub checks, branch protection, approval, merge, and apply are not implemented
 Stage 15 adds a risk-aware autonomy ladder with existing scoped approval gates.
 
 Continue with [Stage 15: autonomy decision engine](15-stage-15-autonomy-decision-engine.md)
-or [local and Kubernetes deployment](16-local-and-kubernetes.md).
+or [local and Kubernetes deployment](17-local-and-kubernetes.md).
